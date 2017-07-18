@@ -1,0 +1,9 @@
+﻿@model PayFor.ViewModels.LoginViewModel
+<ul class="nav navbar-nav navbar-right">
+    <li>
+        <a asp-area="" asp-controller="Auth" asp-action="Index" title="Manage">Hello @Model.UserName!</a>
+    </li>
+    <li>
+        <a asp-area="" asp-controller="Auth" asp-action="Logout" title="Logout">Log out</a>
+    </li>
+</ul>
