@@ -1,10 +1,16 @@
 ﻿<template>
-    <component 
-        v-on:showgroup = "showgroup" 
-        v-on:showallgroups = "showallgroups"
-        v-bind:is = "currentView"
-        v-bind:group = "group">
-    </component>
+    <div>
+        <sidebar></sidebar>
+        <!-- <router-view></router-view> -->
+        <article class="content">
+            <component 
+                v-on:showgroup = "showgroup" 
+                v-on:showallgroups = "showallgroups"
+                v-bind:is = "currentView"
+                v-bind:group = "group">
+            </component>
+        </article>
+    </div>
 </template>
 
 <script>

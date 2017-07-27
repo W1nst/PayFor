@@ -1,31 +1,33 @@
 <template>
-    <div class="col-md-12">
-        <div class="card ">
-            <is-busy v-bind:is-busy="isBusy"></is-busy>
-            <div v-if="!isBusy" class="content table-responsive table-full-width">
-                <table class="table table-hover table-striped">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Create Date</th>
-                            <th>Author</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr is="grouprow" 
-                            v-for="(group,index) in groups" 
-                            v-bind:group="group" 
-                            v-bind:key="index" 
-                            v-on:remove="deleteGroup(index)"
-                            v-on:showgroup="showGroup(group.id)">
-                        </tr>
-                    </tbody>
-                </table>
+    <section class="section">
+        <div class="row">
+            <div class="card ">
+                <is-busy v-bind:is-busy="isBusy"></is-busy>
+                <div v-if="!isBusy" class="content table-responsive table-full-width">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Create Date</th>
+                                <th>Author</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr is="grouprow" 
+                                v-for="(group,index) in groups" 
+                                v-bind:group="group" 
+                                v-bind:key="index" 
+                                v-on:remove="deleteGroup(index)"
+                                v-on:showgroup="showGroup(group.id)">
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+            <creategroup v-bind:group="newGroup" v-bind:error-message="errorMessage" v-on:create="createGroup()"></creategroup>
         </div>
-        <creategroup v-bind:group="newGroup" v-bind:error-message="errorMessage" v-on:create="createGroup()"></creategroup>
-    </div>
+    </section>
 </template>
 <script>
     import axios from 'axios';
