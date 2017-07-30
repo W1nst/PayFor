@@ -15,17 +15,17 @@ namespace PayFor.Context
         {
             _context = context;
         }
-
-        public async Task<Group> GetGroup(int groupId, string userId)
+        //Groups
+        public async Task<Group> GetGroup(int id, string userId)
         {
-            if (! await IsInGroup(groupId, userId)) return null;
-            
-            return  await _context.Groups
+            if (!await IsInGroup(id, userId)) return null;
+
+            return await _context.Groups
                     .Include(x => x.Payments)
                     .ThenInclude(x => x.Category)
-                    .Include(x=>x.UserGroups)
-                    .ThenInclude(x=>x.User)
-                    .FirstOrDefaultAsync(x => x.Id == groupId);
+                    .Include(x => x.UserGroups)
+                    .ThenInclude(x => x.User)
+                    .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<IEnumerable<Group>> GetUserGroups(string userId)
@@ -38,7 +38,7 @@ namespace PayFor.Context
 
 
         }
-        
+
         public async Task CreateGroup(Group group, string userId)
         {
             var user = await _context.Users.Include(x => x.UserGroups).FirstOrDefaultAsync(x => x.Id == userId);
@@ -52,23 +52,23 @@ namespace PayFor.Context
             _context.Users.Update(user);
         }
 
-        public async Task<bool> DeleteGroup(int groupId, string userId)
+        public async Task<bool> DeleteGroup(int id, string userId)
         {
-            if (!await IsGroupOwner(groupId, userId)) return false;
-            _context.Groups.Remove(_context.Groups.FirstOrDefault(x => x.Id == groupId));
+            if (!await IsGroupOwner(id, userId)) return false;
+            _context.Groups.Remove(_context.Groups.FirstOrDefault(x => x.Id == id));
             return true;
         }
-
-        public async Task<Payment> GetPayment(int pId, string userId)
+        //Payments
+        public async Task<Payment> GetPayment(int id, string userId)
         {
             var payment = await _context.Payments
                 .Include(x => x.Category)
                 .Include(x => x.User)
                 .Include(x => x.Group)
-                .FirstOrDefaultAsync(x => x.Id == pId);
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (payment == null)
                 return null;
-            return !await IsInGroup(payment.Group.Id,userId) ? null : payment;
+            return !await IsInGroup(payment.Group.Id, userId) ? null : payment;
         }
 
         public async Task<IEnumerable<Payment>> GetUserPayments(string userId)
@@ -88,9 +88,9 @@ namespace PayFor.Context
             return true;
         }
 
-        public async Task<bool> DeletePayment(int pId, string userId)
+        public async Task<bool> DeletePayment(int id, string userId)
         {
-            var payment = await _context.Payments.Include(x=>x.Group).FirstOrDefaultAsync(x => x.Id == pId);
+            var payment = await _context.Payments.Include(x => x.Group).FirstOrDefaultAsync(x => x.Id == id);
             if (payment == null)
                 return false;
             if (!await IsInGroup(payment.Group.Id, userId))
@@ -98,7 +98,26 @@ namespace PayFor.Context
             _context.Payments.Remove(payment);
             return true;
         }
+        //Categories
+        public async Task<Category> GetCategory (int id, string userId){
+            return await _context.Categories.FirstOrDefaultAsync(x=>x.Id == id);
+        }
+        public async Task<IEnumerable<Category>> GetAllCategories(string userId)
+        {
+            return await _context.Categories.ToListAsync();
+        }
+        public bool CreateCategory(Category category, string userId){
+            _context.Categories.Add(category);
+            return true;
+        }
+        public async Task<bool> DeleteCategory(int id, string userId){
+            var category = await _context.Categories.FirstOrDefaultAsync(x=>x.Id == id);
+            if (category == null) return false;
+            _context.Categories.Remove(category);
+            return true;
+        }
 
+        //Other
         async Task<bool> IsInGroup(int groupId, string userId)
         {
             var user = await _context.Users
@@ -120,7 +139,7 @@ namespace PayFor.Context
         public async Task<bool> SaveChangesAsync()
         {
             return (await _context.SaveChangesAsync()) > 0;
-        } 
+        }
     }
 
 }

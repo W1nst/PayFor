@@ -10,7 +10,7 @@ namespace PayFor.ViewModels
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime CreateDateTime { get; set; } = DateTime.Now;
-        public string AuthorName { get; set; }
+        public UserRowViewModel AuthorUser { get; set; }
         public List<PaymentViewModel> Payments { get; set; }
         public List<UserRowViewModel> Users{ get; set; }
     }

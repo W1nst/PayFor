@@ -87,16 +87,17 @@ namespace PayFor
                 config.CreateMap<User, UserRowViewModel>();
                 config.CreateMap<Group, GroupViewModel>()
                     .ForMember(dst => dst.Users,
-                        op => op.MapFrom(src => src.UserGroups.Select(x=>x.User)))
-                    .ForMember(dst => dst.AuthorName, 
-                        op=>op.MapFrom(src=>src.AuthorUser.UserName+" "+src.AuthorUser.LastName));
+                        op => op.MapFrom(src => src.UserGroups.Select(x=>x.User)));
+                    // .ForMember(dst => dst.AuthorName, 
+                    //     op=>op.MapFrom(src=>src.AuthorUser.UserName+" "+src.AuthorUser.LastName));
                 config.CreateMap<Group, GroupRowViewModel>()
-                    .ForMember(dst => dst.AuthorName, 
-                        op=>op.MapFrom(src=>src.AuthorUser.UserName+" "+src.AuthorUser.LastName))
+                    // .ForMember(dst => dst.AuthorName, 
+                    //     op=>op.MapFrom(src=>src.AuthorUser.UserName+" "+src.AuthorUser.LastName))
                     .ReverseMap();
-                config.CreateMap<Payment, PaymentViewModel>()
-                    .ForMember(src=>src.AddUser,op=>op.MapFrom(src=>src.User.FirstName+" "+ src.User.LastName));
+                config.CreateMap<Payment, PaymentViewModel>();
+                    // .ForMember(src=>src.AddUser,op=>op.MapFrom(src=>src.User.FirstName+" "+ src.User.LastName));
                 config.CreateMap<Payment, PaymentCreateViewModel>().ReverseMap();
+                config.CreateMap<Category,CategoryViewModel>().ReverseMap();
             });
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();

@@ -13,9 +13,10 @@
   },
   "devDependencies": {
     "webpack": "*",
-    "vue":"2.4.1",
+    "vue": "2.4.2",
     "vue-router": "2.7.0",
     "vue-loader": "13.0.2",
+    "vee-validate": "^2.0.0-rc.8",
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.7",
     "babel-plugin-transform-runtime": "^6.15.0",
@@ -33,5 +34,8 @@
   "bugs": {
     "url": "https://github.com/W1nst/PayFor/issues"
   },
-  "homepage": "https://github.com/W1nst/PayFor#readme"
+  "homepage": "https://github.com/W1nst/PayFor#readme",
+  "dependencies": {
+    
+  }
 }

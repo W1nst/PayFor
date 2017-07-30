@@ -11,6 +11,6 @@ namespace PayFor.ViewModels
         [StringLength(100,MinimumLength = 3)]
         public string Name { get; set; }
         public DateTime CreateDateTime { get; set; } = DateTime.Now;
-        public string AuthorName { get; set; }
+        public UserRowViewModel AuthorUser { get; set; }
     }
 }

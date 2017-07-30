@@ -1,37 +1,60 @@
 <template>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="header">
-                    <h4 class="title">Create Group</h4>
-                </div>
-                <div class="content">
-                    <p class="text-danger" v-if="errorMessage">{{errorMessage}}</p>
-                    
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Name</label>
-                                    <input type="text" class="form-control" placeholder="Group Name" value="" v-model="group.name">
-                                </div>
-                            </div>
-                        </div>
-                        <button v-on:click="$emit('create')" class="btn btn-info btn-fill pull-right">Create</button>
-                        <div class="clearfix"></div>
-                    
-                </div>
+    <div class="col-md-12">
+        <div class="card card-block sameheight-item">
+            <div class="title-block">
+                <h3 class="title">Group</h3>
             </div>
+            <form role="form" @submit.prevent="validateBeforeSubmit">
+                <p class="text-danger" v-if="errorMessage">{{errorMessage}}</p>
+                <div class="form-group" :class="{'has-error': errors.has('Name'), 'has-success': !errors.has('Name') }">
+                    <label class="control-label" for="gName">Name</label>
+                    <input 
+                        v-model="newGroup.name"  
+                        v-validate="'required|min:3'" 
+                        class="form-control boxed" 
+                        type="text" 
+                        placeholder="Group Name" 
+                        id="gName" name="Name">
+                    <span class="text-danger" v-if="errors.has('Name')">{{ errors.first('Name') }}</span>
+                </div>
+                <div class="form-group"> 
+                    <button class="btn btn-primary" type="Submit">Create</button>
+                </div>
+            </form>
         </div>
     </div>
 </template>
 
 <script>
+    import axios from 'axios';
     export default  {
-        props: {
-            group:{
-                name:String
+        data:function() {
+            return{
+                newGroup:{
+                    name:''
+                },
+                errorMessage:''
+            }
+        },
+        methods:{
+            createGroup : function (){
+                var vm = this;
+                vm.isBusy = true;
+                vm.errorMessage = '';
+                axios.post('/api/group/',vm.newGroup)
+                .then(function(response){
+                    vm.$router.push('groups');
+                }).catch(function(ex){
+                    vm.errorMessage = "Something went wrong: "+ ex + " - " + ex.response.data.name;
+                });
+                
             },
-            errorMessage:''
+            validateBeforeSubmit(e) {
+                this.$validator.validateAll();
+                if (!this.errors.any()) {
+                    this.createGroup();
+                }
+            }
         }
     }
 </script>

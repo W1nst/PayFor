@@ -1,63 +1,201 @@
 <template>
-    <div class="col-md-8">
-        <button class="btn btn-info btn-fill" v-on:click="$emit('showallgroups')">Back</button>
-        <div class="card ">
-            <div class="header">
-                <h4 class="title">{{group.name}}</h4>
-                <p class="category" v-show="group.authorName">Author: {{group.authorName}}</p>
-            </div>
-            <div class="content">
-                <div class="table-full-width">
-                    <table class="table">
-                        <tbody>
-                            <tr v-for="(payment,index) in group.payments" 
-                                v-bind:key="index">
-                                <td>
-                                       {{payment.amount}}
-                                </td>
-                                <td>{{payment.category.name}}</td>
-                                <td>{{payment.addUser}}</td>
-                                <td class="td-actions text-right">
-                                    <button type="button" rel="tooltip" title="" class="btn btn-info btn-simple btn-xs" data-original-title="Edit Task">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button type="button" rel="tooltip" title="" class="btn btn-danger btn-simple btn-xs" data-original-title="Remove">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="footer">
-                    <hr>
-                    <div class="header">
-                        Total:{{total}}
+    <article class="dashboard-page">
+        <div class="title-block">
+            <h1 class="title"> {{group.name}} </h1>
+            <p class="title-description" v-show="authorName"> Author: {{authorName}} </p>
+        </div>
+        <section class="section">
+            <div class="row">
+                <div class="col-xl-9">
+                    <div class="card items" data-exclude="xs,sm,lg">
+                        <div class="card-header bordered">
+                            <div class="header-block">
+                                <h3 class="title">Payments</h3> <router-link :to="{ name: 'createpayment'}" class="btn btn-primary btn-sm rounded">Add new</router-link> 
+                            </div>
+                        </div>
+                        <div class="card-header bordered">
+                            <router-view></router-view>
+                        </div>
+                        <ul class="item-list striped">
+                            <li class="item item-list-header hidden-sm-down">
+                                <div class="item-row">
+                                    <div class="item-col item-col-header item-col-title">
+                                        <div> <span>Note</span> </div>
+                                    </div>
+                                    <div class="item-col item-col-header item-col-sales">
+                                        <div> <span>Amount</span> </div>
+                                    </div>
+                                    <div class="item-col item-col-header item-col-category">
+                                        <div class="no-overflow"> <span>Category</span> </div>
+                                    </div>
+                                    <div class="item-col item-col-header item-col-author">
+                                        <div class="no-overflow"> <span>Author</span> </div>
+                                    </div>
+                                    <div class="item-col item-col-header item-col-date">
+                                        <div class="no-overflow"> <span>Add date</span> </div>
+                                    </div>
+                                    <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
+                                </div>
+                            </li>
+                            <li class="item"
+                                is="paymentrow" 
+                                v-for="(payment,index) in group.payments" 
+                                v-bind:payment="payment" 
+                                v-bind:key="index" 
+                                v-on:remove="deletePayment(index)">
+                            </li>
+                        </ul>
                     </div>
                 </div>
+                <div class="col col-xs-12 col-sm-12 col-md-12 col-xl-3 stats-col">
+                    <div class="card stats" data-exclude="xs">
+                        <div class="card-block">
+                            <div class="title-block">
+                                <h4 class="title"> Stats </h4>
+                                <p class="title-description"> Group metrics </p>
+                            </div>
+                            <div class="row row-sm stats-container">
+                                <div class="col-xs-12 stat-col">
+                                    <div class="stat-icon"> <i class="fa fa-shopping-cart"></i> </div>
+                                    <div class="stat">
+                                        <div class="value"> {{paymentscount}} </div>
+                                        <div class="name">Payments</div>
+                                    </div> 
+                                    <progress class="progress stat-progress" value="25" max="100">
+                                        <div class="progress">
+                                            <span class="progress-bar" style="width: 25%;"></span>
+                                        </div>
+                                    </progress> 
+                                </div>
+                                <div class="col-xs-12 col-sm-12  stat-col">
+                                    <div class="stat-icon"> <i class="fa fa-line-chart"></i> </div>
+                                    <div class="stat">
+                                        <div class="value"> {{monthlyexpenses}} </div>
+                                        <div class="name">Monthly expenses</div>
+                                    </div> 
+                                    <progress class="progress stat-progress" value="60" max="100">
+                                        <div class="progress">
+                                            <span class="progress-bar" style="width: 60%;"></span>
+                                        </div>
+                                    </progress>
+                                </div>
+                                <div class="col-xs-12 col-sm-12  stat-col">
+                                    <div class="stat-icon"> <i class="fa fa-users"></i> </div>
+                                    <div class="stat">
+                                        <div class="value"> {{userscount}} </div>
+                                        <div class="name"> Total users </div>
+                                    </div> 
+                                    <progress class="progress stat-progress" value="34" max="100">
+                                        <div class="progress">
+                                            <span class="progress-bar" style="width: 34%;"></span>
+                                        </div>
+                                    </progress> 
+                                </div>                                
+                                <div class="col-xs-12 col-sm-12 stat-col">
+                                    <div class="stat-icon"> <i class="fa fa-dollar"></i> </div>
+                                    <div class="stat">
+                                        <div class="value"> {{total}} </div>
+                                        <div class="name"> Total </div>
+                                    </div> 
+                                    <progress class="progress stat-progress" value="15" max="100">
+                                        <div class="progress">
+                                            <span class="progress-bar" style="width: 15%;"></span>
+                                        </div>
+                                    </progress> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
-        </div>
-    </div>
+        </section>        
+    </article>
 </template>
 
 <script>
+    import axios from 'axios';
+    var moment = require('moment');
     export default {
-        props : ['group'],
+        props : ['groupId'],
         data () {
             return {
-                
+                group:{},
+                loaded:false,
+                errorMessage:''
             }
         },
         computed: {
             total: function(){
-                return this.group.payments.reduce(function(prev, payment){
-                    return prev + payment.amount; 
-                },0);
-            }   
+                if (this.loaded){
+                    return this.group.payments.reduce(function(prev, payment){
+                        return prev + payment.amount; 
+                    },0);
+                }else{
+                    return 0;
+                }
+            },
+            monthlyexpenses: function(){
+                if (this.loaded){
+                    return this.group.payments.
+                        filter(function(payment){
+                            return moment(payment.date).month() == moment().month()})
+                        .reduce(function(prev, payment){
+                            return prev + payment.amount;
+                        },0);
+                } else{
+                    return 0;
+                }
+            },
+            paymentscount: function(){
+                if (this.loaded){
+                    return this.group.payments.length;
+                } else {
+                    return 0;
+                }
+            },
+            userscount: function(){
+                if (this.loaded){
+                    return this.group.users.length;
+                } else {
+                    return 0;
+                } 
+            },
+            authorName: function(){
+                if (this.loaded && this.group.authorUser){
+                    return this.group.authorUser.firstName + ' ' +  this.group.authorUser.lastName;
+                } else {
+                    return '';
+                } 
+            }
         },
         methods: {
-            
+            fetchGroup: function(){
+                var vm = this;
+                axios.get(`/api/group/`+vm.groupId)
+                    .then(function (response) {
+                        vm.group = response.data;
+                        vm.loaded = true;
+                    })
+                    .catch(function (error) {
+                        console.log(error); 
+                        vm.$router.replace('/groups');   
+                    });
+            },
+            deletePayment:function(index){
+                if (!confirm('Are you sure you want to delete "'+ this.group.payments[index].note+'" thing from the database?')) return;
+                var vm = this;
+                vm.errorMessage = "";
+                axios.post('/api/payment/'+vm.group.payments[index].id+'/delete')
+                .then(function(response){
+                    vm.group.payments.splice(index, 1);
+                }).catch(function(ex){
+                    vm.errorMessage = "Something went wrong: "+ ex;
+                });       
+            },
+        },
+        created:function(){
+            this.fetchGroup();
         }
     }
 </script>

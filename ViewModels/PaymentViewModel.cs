@@ -15,7 +15,7 @@ namespace PayFor.ViewModels
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
         public Category Category { get; set; }
-        public string AddUser { get; set; }
+        public UserRowViewModel User { get; set; }
         public GroupRowViewModel Group{ get; set; }
     }
 }

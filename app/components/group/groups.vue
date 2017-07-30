@@ -1,33 +1,73 @@
 <template>
-    <section class="section">
-        <div class="row">
-            <div class="card ">
-                <is-busy v-bind:is-busy="isBusy"></is-busy>
-                <div v-if="!isBusy" class="content table-responsive table-full-width">
-                    <table class="table table-hover table-striped">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Create Date</th>
-                                <th>Author</th>
-                                <th>Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr is="grouprow" 
-                                v-for="(group,index) in groups" 
-                                v-bind:group="group" 
-                                v-bind:key="index" 
-                                v-on:remove="deleteGroup(index)"
-                                v-on:showgroup="showGroup(group.id)">
-                            </tr>
-                        </tbody>
-                    </table>
+    <article class="content items-list-page">
+        <div class="title-search-block">
+            <div class="title-block">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 class="title"> 
+                            Groups 
+                            <router-link to="/creategroup" class="btn btn-primary btn-sm rounded-s">Add New</router-link>
+                            <div class="action dropdown"> 
+                                <button class="btn  btn-sm rounded-s btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    More actions...
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenu1"> 
+                                    <a class="dropdown-item" href="#"><i class="fa fa-pencil-square-o icon"></i>Mark as a draft</a> 
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#confirm-modal"><i class="fa fa-close icon"></i>Delete</a>                                                </div>
+                            </div>
+                        </h3>
+                        <p class="title-description"> List of all groups you are in </p>
+                    </div>
                 </div>
             </div>
-            <creategroup v-bind:group="newGroup" v-bind:error-message="errorMessage" v-on:create="createGroup()"></creategroup>
+            <div class="items-search">
+                <form class="form-inline">
+                    <div class="input-group"> <input type="text" class="form-control boxed rounded-s" placeholder="Search for..."> 
+                        <span class="input-group-btn">
+                            <button class="btn btn-secondary rounded-s" type="button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span> 
+                    </div>
+                </form>
+            </div>
         </div>
-    </section>
+        <div class="card items">
+            <ul class="item-list striped">
+                <li class="item item-list-header hidden-sm-down">
+                    <div class="item-row">
+                        <div class="item-col item-col-header item-col-title">
+                            <div> <span>Name</span> </div>
+                        </div>
+                        <div class="item-col item-col-header item-col-author">
+                            <div class="no-overflow"> <span>Author</span> </div>
+                        </div>
+                        <div class="item-col item-col-header item-col-date">
+                            <div> <span>Created</span> </div>
+                        </div>
+                        <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
+                    </div>
+                </li>
+                <li is="grouprow" 
+                    v-for="(group,index) in groups" 
+                    v-bind:group="group" 
+                    v-bind:key="index" 
+                    v-on:remove="deleteGroup(index)">
+                </li>
+            </ul>
+        </div>
+        <nav class="text-xs-right">
+            <ul class="pagination">
+                <li class="page-item"> <a class="page-link" href=""> Prev </a></li>
+                <li class="page-item active"> <a class="page-link" href="">1</a></li>
+                <li class="page-item"> <a class="page-link" href="">2</a></li>
+                <li class="page-item"> <a class="page-link" href="">3</a></li>
+                <li class="page-item"> <a class="page-link" href="">4</a></li>
+                <li class="page-item"> <a class="page-link" href="">5</a></li>
+                <li class="page-item"> <a class="page-link" href="">Next</a></li>
+            </ul>
+        </nav>
+    </article>
 </template>
 <script>
     import axios from 'axios';
@@ -54,21 +94,6 @@
                 }).catch(function(ex){
                     vm.errorMessage = "Something went wrong: "+ ex;
                 });       
-            },
-            createGroup : function (){
-                var vm = this;
-                vm.isBusy = true;
-                vm.errorMessage = "";
-                axios.post('/api/group/',vm.newGroup)
-                .then(function(response){
-                    vm.groups.push(response.data);
-                    vm.newGroup={};
-                    vm.isBusy = false;
-                }).catch(function(ex){
-                    vm.errorMessage = "Something went wrong: "+ ex;
-                    vm.isBusy = false;
-                });
-                
             },
             fetchGroups: function(){
                 var vm = this;
