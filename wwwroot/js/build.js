@@ -34829,8 +34829,6 @@ if (false) {(function () {
 //
 //
 //
-//
-//
 
 
 var moment = __webpack_require__(0);
@@ -34910,6 +34908,9 @@ var moment = __webpack_require__(0);
     },
     created: function () {
         this.fetchGroup();
+    },
+    watch: {
+        '$route': 'fetchGroup'
     }
 });
 
@@ -35237,9 +35238,7 @@ var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._sel
         name: 'createpayment'
       }
     }
-  }, [_vm._v("Add new")])], 1)]), _vm._v(" "), _c('div', {
-    staticClass: "card-header bordered"
-  }, [_c('router-view')], 1), _vm._v(" "), _c('ul', {
+  }, [_vm._v("Add new")])], 1)]), _vm._v(" "), _c('router-view'), _vm._v(" "), _c('ul', {
     staticClass: "item-list striped"
   }, [_vm._m(0), _vm._v(" "), _vm._l((_vm.group.payments), function(payment, index) {
     return _c("paymentrow", {
@@ -35255,7 +35254,7 @@ var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._sel
         }
       }
     })
-  })], 2)])]), _vm._v(" "), _c('div', {
+  })], 2)], 1)]), _vm._v(" "), _c('div', {
     staticClass: "col col-xs-12 col-sm-12 col-md-12 col-xl-3 stats-col"
   }, [_c('div', {
     staticClass: "card stats",
@@ -35516,15 +35515,6 @@ if (false) {(function () {
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["a"] = ({
     data: function () {
@@ -35549,7 +35539,7 @@ var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._sel
     attrs: {
       "id": "sidebar-menu"
     }
-  }, [_vm._m(1), _vm._v(" "), _c('li', [_vm._m(2), _vm._v(" "), _c('ul', [_c('router-link', {
+  }, [_vm._m(1), _vm._v(" "), _c('router-link', {
     attrs: {
       "to": "/groups",
       "active-class": "active",
@@ -35561,7 +35551,7 @@ var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._sel
       "active-class": "active",
       "tag": "li"
     }
-  }, [_c('a', [_vm._v("Create group")])])], 1)])])])]), _vm._v(" "), _vm._m(3)])
+  }, [_c('a', [_vm._v("Create group")])])], 1)])]), _vm._v(" "), _vm._m(2)])
 }
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
@@ -35588,17 +35578,7 @@ var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _
     }
   }, [_c('i', {
     staticClass: "fa fa-home"
-  }), _vm._v(" Dashboard\n                    ")])])
-},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('a', {
-    attrs: {
-      "href": "#"
-    }
-  }, [_c('i', {
-    staticClass: "fa fa-th-large"
-  }), _vm._v(" Groups "), _c('i', {
-    staticClass: "fa arrow"
-  })])
+  }), _vm._v(" Dashboard")])])
 },function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('footer', {
     staticClass: "sidebar-footer"
@@ -35886,6 +35866,13 @@ if (false) {(function () {
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["a"] = ({
@@ -35895,6 +35882,7 @@ if (false) {(function () {
                 note: '',
                 amount: '',
                 categoryId: Number,
+                date: '',
                 groupId: this.$route.params.groupId
             },
             categories: [],
@@ -35928,6 +35916,9 @@ if (false) {(function () {
     },
     created: function () {
         this.getCategories();
+    },
+    watch: {
+        '$route': 'getCategories'
     }
 });
 
@@ -35938,6 +35929,8 @@ if (false) {(function () {
 "use strict";
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
+    staticClass: "card-header bordered"
+  }, [_c('div', {
     staticClass: "col-md-12"
   }, [_c('div', {
     staticClass: "card card-block"
@@ -36032,6 +36025,38 @@ var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._sel
   }, [_c('label', {
     staticClass: "control-label",
     attrs: {
+      "for": "pDate"
+    }
+  }, [_vm._v("Date")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.payment.date),
+      expression: "payment.date"
+    }],
+    staticClass: "form-control boxed",
+    attrs: {
+      "type": "text",
+      "id": "pDate",
+      "placeholder": "Date",
+      "Name": "Date"
+    },
+    domProps: {
+      "value": (_vm.payment.date)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.payment.date = $event.target.value
+      }
+    }
+  }), _vm._v(" "), (_vm.errors.has('Date')) ? _c('span', {
+    staticClass: "text-danger"
+  }, [_vm._v(_vm._s(_vm.errors.first('Date')))]) : _vm._e()]), _vm._v(" "), _c('div', {
+    staticClass: "form-group"
+  }, [_c('label', {
+    staticClass: "control-label",
+    attrs: {
       "for": "pCategory"
     }
   }, [_vm._v("Category")]), _vm._v(" "), _c('select', {
@@ -36069,7 +36094,7 @@ var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._sel
       domProps: {
         "value": category.id
       }
-    }, [_vm._v(_vm._s(category.name) + "\n                    ")])
+    }, [_vm._v(_vm._s(category.name) + "\n                        ")])
   })), _vm._v(" "), (_vm.errors.has('Category')) ? _c('span', {
     staticClass: "text-danger"
   }, [_vm._v(_vm._s(_vm.errors.first('Category')))]) : _vm._e()]), _vm._v(" "), _c('button', {
@@ -36077,7 +36102,7 @@ var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._sel
     attrs: {
       "type": "Submit"
     }
-  }, [_vm._v("Add")])])])])
+  }, [_vm._v("Add")])])])])])
 }
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {

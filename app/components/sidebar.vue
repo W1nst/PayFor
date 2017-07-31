@@ -16,19 +16,10 @@
             <nav class="menu">
                 <ul class="nav metismenu" id="sidebar-menu">
                     <li> 
-                        <a href="index.html">
-                            <i class="fa fa-home"></i> Dashboard
-                        </a> 
+                        <a href="index.html"><i class="fa fa-home"></i> Dashboard</a> 
                     </li>
-                    <li> 
-                        <a href="#">
-                            <i class="fa fa-th-large"></i> Groups <i class="fa arrow"></i>
-                        </a>
-                        <ul>
-                            <router-link to="/groups" active-class="active" tag="li"><a>Groups list</a></router-link>
-                            <router-link to="/creategroup" active-class="active" tag="li"><a>Create group</a></router-link>
-                        </ul>
-                    </li>
+                    <router-link to="/groups" active-class="active" tag="li"><a>Groups list</a></router-link>
+                    <router-link to="/creategroup" active-class="active" tag="li" ><a>Create group</a></router-link>
                 </ul>
             </nav>
         </div>

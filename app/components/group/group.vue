@@ -13,9 +13,7 @@
                                 <h3 class="title">Payments</h3> <router-link :to="{ name: 'createpayment'}" class="btn btn-primary btn-sm rounded">Add new</router-link> 
                             </div>
                         </div>
-                        <div class="card-header bordered">
                             <router-view></router-view>
-                        </div>
                         <ul class="item-list striped">
                             <li class="item item-list-header hidden-sm-down">
                                 <div class="item-row">
@@ -196,6 +194,9 @@
         },
         created:function(){
             this.fetchGroup();
-        }
+        },
+        watch:{
+            '$route':'fetchGroup'
+        }  
     }
 </script>
