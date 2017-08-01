@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack app/main.js wwwroot/js/build.js -p --watch",
-    "build1": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "build": "webpack --watch",
+    "buildp": "webpack -p --watch",
+    "buildProd": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "repository": {
     "type": "git",

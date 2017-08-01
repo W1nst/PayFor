@@ -18,6 +18,19 @@
             }
         },
         {
+            "taskName": "WebPackWatchP",
+            "type": "shell",
+            "command": "npm run buildp",
+            "group": "build",
+            "isBackground": true,
+            "problemMatcher": [
+                "$eslint-stylish"
+            ],
+            "presentation": {
+                "reveal": "never"
+            }
+        },
+        {
             "taskName": "Server Build",
             "command": "dotnet build",
             "type": "shell",

@@ -4,7 +4,7 @@ var webpack = require('webpack')
 module.exports = {
   entry: './app/main.js',
   output: {
-    path: path.resolve(__dirname, './wwwroot'),
+    path: path.resolve(__dirname, './wwwroot/js'),
     publicPath: '/wwwroot/js/',
     filename: 'build.js'
   },
@@ -68,19 +68,3 @@ if (process.env.NODE_ENV === 'production') {
     })
   ])
 }
-// module.exports = {
-//   module: {
-//     loaders: [
-//       {
-//         test: /\.vue$/,
-//         exclude: /node_modules/,
-//         loader: "vue-loader"
-//       }
-//     ]
-//   },
-//   resolve: {
-//     alias: {
-//       'vue$': 'vue/dist/vue.esm.js' // 'vue/dist/vue.common.js' для webpack 1
-//     }
-//   }
-// }
