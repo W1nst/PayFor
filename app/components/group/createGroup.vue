@@ -26,7 +26,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
     export default  {
         data:function() {
             return{
@@ -41,11 +40,11 @@
                 var vm = this;
                 vm.isBusy = true;
                 vm.errorMessage = '';
-                axios.post('/api/group/',vm.newGroup)
+                vm.$http.post('/api/group/',vm.newGroup)
                 .then(function(response){
                     vm.$router.push('groups');
                 }).catch(function(ex){
-                    vm.errorMessage = "Something went wrong: "+ ex + " - " + ex.response.data.name;
+                    vm.errorMessage = "Something went wrong:  " + ex + " - " + ex.response.data.name;
                 });
                 
             },

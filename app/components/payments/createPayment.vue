@@ -40,7 +40,6 @@
     </div>
 </template>
 <script>
-import axios from 'axios';
 export default {
     data:function() {
         return{
@@ -58,7 +57,7 @@ export default {
     methods:{
         getCategories: function(){
             var vm = this;
-            axios.get('/api/category/')
+            vm.$http.get('/api/category/')
             .then(function (response) {
                 vm.categories = response.data;
             })
@@ -75,7 +74,7 @@ export default {
         createPayment: function(){
             var vm = this;
             vm.errorMessage = '';
-            axios.post('/api/payment/',vm.payment)
+            vm.$http.post('/api/payment/',vm.payment)
             .then(function(response){
                 vm.$router.push({ name: 'group', params: { groupId: vm.$route.params.groupId }});
             }).catch(function(ex){

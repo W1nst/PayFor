@@ -112,7 +112,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
     var moment = require('moment');
     export default {
         props : ['groupId'],
@@ -137,7 +136,10 @@
                 if (this.loaded){
                     return this.group.payments.
                         filter(function(payment){
-                            return moment(payment.date).month() == moment().month()})
+                            var paymentdate = moment(payment.date);
+                            var currentdate = moment();
+                            return paymentdate.month() == currentdate.month() 
+                                   && paymentdate.year() == currentdate.year()})
                         .reduce(function(prev, payment){
                             return prev + payment.amount;
                         },0);
@@ -170,7 +172,7 @@
         methods: {
             fetchGroup: function(){
                 var vm = this;
-                axios.get(`/api/group/`+vm.groupId)
+                vm.$http.get(`/api/group/`+vm.groupId)
                     .then(function (response) {
                         vm.group = response.data;
                         vm.loaded = true;
@@ -184,7 +186,7 @@
                 if (!confirm('Are you sure you want to delete "'+ this.group.payments[index].note+'" thing from the database?')) return;
                 var vm = this;
                 vm.errorMessage = "";
-                axios.post('/api/payment/'+vm.group.payments[index].id+'/delete')
+                vm.$http.post('/api/payment/'+vm.group.payments[index].id+'/delete')
                 .then(function(response){
                     vm.group.payments.splice(index, 1);
                 }).catch(function(ex){

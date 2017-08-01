@@ -15,17 +15,20 @@ namespace PayFor.Context
         {
             _context = context;
         }
+
         //Groups
         public async Task<Group> GetGroup(int id, string userId)
         {
             if (!await IsInGroup(id, userId)) return null;
 
-            return await _context.Groups
+            var group = await _context.Groups
                     .Include(x => x.Payments)
                     .ThenInclude(x => x.Category)
                     .Include(x => x.UserGroups)
                     .ThenInclude(x => x.User)
                     .FirstOrDefaultAsync(x => x.Id == id);
+            group.Payments = group.Payments.OrderByDescending(x=>x.Date).ToList();
+            return group;
         }
 
         public async Task<IEnumerable<Group>> GetUserGroups(string userId)
@@ -34,9 +37,7 @@ namespace PayFor.Context
                 .Include(x => x.UserGroups)
                 .ThenInclude(x => x.Group)
                 .FirstOrDefaultAsync(u => u.Id == userId);
-            return user.UserGroups.Select(x => x.Group).Distinct().ToList();
-
-
+            return user.UserGroups.Select(x => x.Group).OrderByDescending(x=>x.CreateDateTime).Distinct().ToList();
         }
 
         public async Task CreateGroup(Group group, string userId)
@@ -58,6 +59,7 @@ namespace PayFor.Context
             _context.Groups.Remove(_context.Groups.FirstOrDefault(x => x.Id == id));
             return true;
         }
+
         //Payments
         public async Task<Payment> GetPayment(int id, string userId)
         {
@@ -77,7 +79,7 @@ namespace PayFor.Context
                 .Include(x => x.Category)
                 .Include(x => x.User)
                 .Include(x => x.Group)
-                .Where(x => x.User.Id == userId).ToListAsync();
+                .Where(x => x.User.Id == userId).OrderByDescending(x=>x.Date).ToListAsync();
         }
 
         public async Task<bool> CreatePayment(Payment payment, string userId)

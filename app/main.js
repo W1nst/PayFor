@@ -1,18 +1,22 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VeeValidate from 'vee-validate'
+import axios from 'axios'
+
 Vue.use(VueRouter)
 Vue.use(VeeValidate)
+Vue.prototype.$http = axios
 
-import isBusy from './components/shared/isBusy.vue';
-import mainwrapper from './components/mainwrapper.vue';
-import groups from './components/group/groups.vue';
-import groupRow from './components/group/groupRow.vue';
-import createGroup from './components/group/createGroup.vue';
-import group from './components/group/group.vue';
-import sidebar from './components/sidebar.vue';
-import paymentrow from './components/payments/paymentRow.vue';
+import isBusy from './components/shared/isBusy.vue'
+import mainwrapper from './components/mainwrapper.vue'
+import groups from './components/group/groups.vue'
+import groupRow from './components/group/groupRow.vue'
+import createGroup from './components/group/createGroup.vue'
+import group from './components/group/group.vue'
+import sidebar from './components/sidebar.vue'
+import paymentrow from './components/payments/paymentRow.vue'
 import createpayment from './components/payments/createPayment.vue'
+
 
 Vue.component('sidebar', sidebar);
 Vue.component('mainwrapper', mainwrapper);
@@ -23,6 +27,8 @@ Vue.component('creategroup', createGroup);
 Vue.component('group', group);
 Vue.component('paymentrow',paymentrow);
 Vue.component('createpayment',createpayment);
+
+
 
 Vue.filter('moment', require('./filters/moment'));
 
@@ -48,12 +54,6 @@ const router = new VueRouter({
                 component: createpayment
             }]
         }
-        // ,{
-        //     name: 'createpayment',
-        //     path: '/createpayment/:groupid',
-        //     component: createpayment,
-        //     props:true
-        // }
     ]
 });
 

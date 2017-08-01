@@ -70,8 +70,6 @@
     </article>
 </template>
 <script>
-    import axios from 'axios';
-
     export default {
         data:function (){
             return{
@@ -88,7 +86,7 @@
                 if (!confirm('Are you sure you want to delete "'+ this.groups[index].name+'" thing from the database?')) return;
                 var vm = this;
                 vm.errorMessage = "";
-                axios.post('/api/group/'+vm.groups[index].id+'/delete')
+                vm.$http.post('/api/group/'+vm.groups[index].id+'/delete')
                 .then(function(response){
                     vm.groups.splice(index, 1);
                 }).catch(function(ex){
@@ -98,7 +96,7 @@
             fetchGroups: function(){
                 var vm = this;
                 vm.isBusy = true;
-                axios.get(`/api/group/`)
+                vm.$http.get(`/api/group/`)
                     .then(function (response) {
                         vm.groups = response.data;
                         vm.isBusy = false;  
@@ -107,9 +105,6 @@
                         console.log(error);
                         vm.isBusy = false;      
                     });
-            } ,
-            showGroup: function(id){
-                this.$emit('showgroup',id);
             }
         },
         created:function(){
