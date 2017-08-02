@@ -16,7 +16,7 @@
             </div>
             <div class="item-col item-col-date">
                 <div class="item-heading">Created</div>
-                <div class="no-overflow"> {{group.createDateTime | moment('LLL')}} </div>
+                <div class="no-overflow"> {{group.createDateTime | moment('L')}} </div>
             </div>
             <div class="item-col fixed item-col-actions-dropdown">
                 <div class="item-actions-dropdown"> 

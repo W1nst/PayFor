@@ -19,7 +19,7 @@
                     </div>
                     <div class="form-group"> 
                         <label class="control-label" for="pDate">Date</label> 
-                        <input v-model="payment.date"  type="text" class="form-control boxed" id="pDate" placeholder="Date" Name="Date">  
+                        <input v-model="payment.date" v-validate="'date_format:MM/DD/YYYY'"  type="text" class="form-control boxed" id="pDate" placeholder="Date" Name="Date">  
                         <span class="text-danger" v-if="errors.has('Date')">{{ errors.first('Date') }}</span>
                     </div>
                     <div class="form-group"> 
@@ -40,6 +40,7 @@
     </div>
 </template>
 <script>
+import $ from 'jquery'
 export default {
     data:function() {
         return{
@@ -47,7 +48,7 @@ export default {
                 note:'',
                 amount: '',
                 categoryId: Number,
-                date: '' ,
+                date: this.$moment().format('L'),
                 groupId: this.$route.params.groupId
             },
             categories:[],
@@ -74,6 +75,8 @@ export default {
         createPayment: function(){
             var vm = this;
             vm.errorMessage = '';
+            var now = vm.$moment();
+            vm.payment.date = vm.$moment(vm.payment.date,'MM/DD/YYYY').hour(now.hour()).minute(now.minute()).second(now.second()).format('YYYY-MM-DD HH:mm:ss');
             vm.$http.post('/api/payment/',vm.payment)
             .then(function(response){
                 vm.$router.push({ name: 'group', params: { groupId: vm.$route.params.groupId }});
@@ -84,6 +87,11 @@ export default {
     },
     created:function(){
         this.getCategories();
+        //this.$('.datepicker').datepicker();
+    },
+    mounted(){
+        $("#pDate").datepicker().on(
+     		"changeDate", () => {this.payment.date = $('#pDate').val()});
     },
     watch:{
         '$route':'getCategories'

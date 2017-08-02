@@ -2,10 +2,15 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VeeValidate from 'vee-validate'
 import axios from 'axios'
+import bootstrapdatepicker from 'bootstrap-datepicker'
+import moment from 'moment'
+
+window.moment = moment;
 
 Vue.use(VueRouter)
 Vue.use(VeeValidate)
 Vue.prototype.$http = axios
+Vue.prototype.$moment = moment
 
 import isBusy from './components/shared/isBusy.vue'
 import mainwrapper from './components/mainwrapper.vue'

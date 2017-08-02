@@ -24,7 +24,7 @@
             </div>
             <div class="item-col item-col-date">
                 <div class="item-heading">Add date</div>
-                <div> {{payment.date | moment('LLL')}} </div>
+                <div> {{payment.date | moment('lll')}} </div>
             </div>
             <div class="item-col fixed item-col-actions-dropdown">
                 <div class="item-actions-dropdown"> 
