@@ -97,6 +97,7 @@ namespace PayFor
                 config.CreateMap<Payment, PaymentViewModel>();
                     // .ForMember(src=>src.AddUser,op=>op.MapFrom(src=>src.User.FirstName+" "+ src.User.LastName));
                 config.CreateMap<Payment, PaymentCreateViewModel>().ReverseMap();
+                config.CreateMap<Payment,PaymentEditViewModel>().ReverseMap();
                 config.CreateMap<Category,CategoryViewModel>().ReverseMap();
             });
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));

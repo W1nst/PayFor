@@ -7,13 +7,10 @@
 
 <script>
 export default  {
+    name:'main',
     data:function(){
         return{
-           
         }
-    },
-    methods: {
-        
     }
 }
 </script>

@@ -8,9 +8,10 @@ using PayFor.Context;
 namespace PayFor.Migrations
 {
     [DbContext(typeof(PayForContext))]
-    partial class PayForContextModelSnapshot : ModelSnapshot
+    [Migration("20170806181106_PaymentAddDate")]
+    partial class PaymentAddDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")

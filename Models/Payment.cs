@@ -22,5 +22,6 @@ namespace PayFor.Models
         public User User { get; set; }
         public int GroupId { get; set; }
         public Group Group { get; set; }
+        public DateTime AddDate { get; set; }
     }
 }

@@ -100,6 +100,15 @@ namespace PayFor.Context
             _context.Payments.Remove(payment);
             return true;
         }
+        public async Task<bool> EditPayment(Payment payment, string userId){
+            var p = await GetPayment(payment.Id,userId);
+            if (p == null) return false;
+                p.Amount = payment.Amount;
+                p.Date = payment.Date;
+                p.Note = payment.Note;
+                p.CategoryId = payment.CategoryId;
+            return true;
+        }
         //Categories
         public async Task<Category> GetCategory (int id, string userId){
             return await _context.Categories.FirstOrDefaultAsync(x=>x.Id == id);

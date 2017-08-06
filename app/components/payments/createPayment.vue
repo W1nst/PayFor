@@ -3,7 +3,7 @@
         <div class="col-md-12">
             <div class="card card-block">
                 <div class="title-block">
-                    <h3 class="title">Payment</h3>
+                    <h3 class="title">Payment {{paymentId}}</h3>
                 </div>
                 <form role="form" @submit.prevent="validateBeforeSubmit">
                     <p class="text-danger" v-if="errorMessage">{{errorMessage}}</p>
@@ -18,7 +18,7 @@
                         <span class="text-danger" v-if="errors.has('Amount')">{{ errors.first('Amount') }}</span>
                     </div>
                     <div class="form-group"> 
-                        <label class="control-label" for="pDate">Date</label> 
+                        <label class="control-label" for="pDate">Payment Date</label> 
                         <input v-model="payment.date" v-validate="'date_format:MM/DD/YYYY'"  type="text" class="form-control boxed" id="pDate" placeholder="Date" Name="Date">  
                         <span class="text-danger" v-if="errors.has('Date')">{{ errors.first('Date') }}</span>
                     </div>
@@ -33,7 +33,7 @@
                         </select>
                         <span class="text-danger" v-if="errors.has('Category')">{{ errors.first('Category') }}</span>
                     </div>
-                    <button class="btn btn-primary" type="Submit">Add</button>
+                    <button class="btn btn-primary" type="Submit">{{buttontest}}</button>
                 </form>
             </div>
         </div>
@@ -42,9 +42,11 @@
 <script>
 import $ from 'jquery'
 export default {
+    props:['paymentId'],
     data:function() {
         return{
             payment:{
+                id:Number,
                 note:'',
                 amount: '',
                 categoryId: Number,
@@ -52,6 +54,8 @@ export default {
                 groupId: this.$route.params.groupId
             },
             categories:[],
+            actionlink:'/api/payment/',
+            buttontest:'Add',
             errorMessage:''
         }
     },
@@ -75,11 +79,24 @@ export default {
         createPayment: function(){
             var vm = this;
             vm.errorMessage = '';
-            var now = vm.$moment();
-            vm.payment.date = vm.$moment(vm.payment.date,'MM/DD/YYYY').hour(now.hour()).minute(now.minute()).second(now.second()).format('YYYY-MM-DD HH:mm:ss');
-            vm.$http.post('/api/payment/',vm.payment)
+            vm.$http.post(vm.actionlink, vm.payment)
             .then(function(response){
                 vm.$router.push({ name: 'group', params: { groupId: vm.$route.params.groupId }});
+            }).catch(function(ex){
+                vm.errorMessage = "Something went wrong: "+ ex + " - " + ex.response.data.name;
+            });
+        },
+        getPayment: function(){
+            if (!this.paymentId) return;
+            var vm = this;
+            vm.errorMessage = '';
+            vm.$http.get('/api/payment/'+vm.paymentId)
+            .then(function(response){
+                vm.payment = response.data;
+                vm.payment.date = vm.$moment(vm.payment.date, 'YYYY-MM-DD HH:mm:ss').format('L');
+                vm.payment.categoryId = response.data.category.id;
+                vm.actionlink = '/api/payment/'+vm.paymentId+'/edit';
+                vm.buttontest = 'Save';
             }).catch(function(ex){
                 vm.errorMessage = "Something went wrong: "+ ex + " - " + ex.response.data.name;
             });
@@ -87,14 +104,15 @@ export default {
     },
     created:function(){
         this.getCategories();
-        //this.$('.datepicker').datepicker();
+        this.getPayment(); 
     },
     mounted(){
         $("#pDate").datepicker().on(
      		"changeDate", () => {this.payment.date = $('#pDate').val()});
     },
     watch:{
-        '$route':'getCategories'
+        '$route':'getCategories',
+        '$route':'getPayment'
     }
 }
 </script>

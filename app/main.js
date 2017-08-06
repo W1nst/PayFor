@@ -22,7 +22,6 @@ import sidebar from './components/sidebar.vue'
 import paymentrow from './components/payments/paymentRow.vue'
 import createpayment from './components/payments/createPayment.vue'
 
-
 Vue.component('sidebar', sidebar);
 Vue.component('mainwrapper', mainwrapper);
 Vue.component('isBusy', isBusy);
@@ -33,14 +32,15 @@ Vue.component('group', group);
 Vue.component('paymentrow',paymentrow);
 Vue.component('createpayment',createpayment);
 
-
-
 Vue.filter('moment', require('./filters/moment'));
-
 
 const router = new VueRouter({
     routes:[
-        {   
+        {
+            name:'index',
+            path:'/',
+            component: groups
+        },{   
             name: 'groups',
             path: '/groups',          
             component: groups
@@ -54,10 +54,17 @@ const router = new VueRouter({
             component: group,
             props:true,
             children:[{
-                name:'createpayment',
-                path:'createpayment',
-                component: createpayment
-            }]
+                    name:'addpayment',
+                    path:'addpayment',
+                    component: createpayment
+                },{
+                    name:'editpayment',
+                    path:'editpayment/:paymentId',
+                    props: true,
+                    component: createpayment
+                }
+
+            ]
         }
     ]
 });

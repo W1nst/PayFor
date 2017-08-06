@@ -97,5 +97,22 @@ namespace PayFor.Controllers.Api
             }
             return BadRequest("Error while deleting payment!");
         }
+
+        [HttpPost("{pId}/edit")]
+        public async Task<IActionResult> EditPayment([FromBody]PaymentEditViewModel payment)
+        {
+            try { 
+                var p = Mapper.Map<Payment>(payment);
+                if (!await _repository.EditPayment(p, _userManager.GetUserId(this.User)))
+                    return StatusCode(403);
+                if (await _repository.SaveChangesAsync())
+                    return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to delete payment: {ex}");
+            }
+            return BadRequest("Error while deleting payment!");
+        }
     }
 }

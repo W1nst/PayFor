@@ -10,7 +10,7 @@
                     <div class="card items" data-exclude="xs,sm,lg">
                         <div class="card-header bordered">
                             <div class="header-block">
-                                <h3 class="title">Payments</h3> <router-link :to="{ name: 'createpayment'}" class="btn btn-primary btn-sm rounded">Add new</router-link> 
+                                <h3 class="title">Payments</h3> <router-link :to="{ name: 'addpayment'}" class="btn btn-primary btn-sm rounded">Add new</router-link> 
                             </div>
                         </div>
                             <router-view></router-view>
@@ -30,7 +30,7 @@
                                         <div class="no-overflow"> <span>Author</span> </div>
                                     </div>
                                     <div class="item-col item-col-header item-col-date">
-                                        <div class="no-overflow"> <span>Add date</span> </div>
+                                        <div class="no-overflow"> <span>Payment date</span> </div>
                                     </div>
                                     <div class="item-col item-col-header fixed item-col-actions-dropdown"> </div>
                                 </div>

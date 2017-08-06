@@ -8,16 +8,15 @@ using PayFor.Models;
 
 namespace PayFor.ViewModels
 {
-    public class PaymentCreateViewModel
+    public class PaymentEditViewModel
     {
+        public int Id { get; set; }
         [StringLength(250)]
         public string Note { get; set; }
         [Required]
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
         public int CategoryId { get; set; }
-        public int GroupId{ get; set; }
-        public DateTime AddDate { get; set; } = DateTime.Now;
         
     }
 }

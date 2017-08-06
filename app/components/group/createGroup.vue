@@ -46,7 +46,6 @@
                 }).catch(function(ex){
                     vm.errorMessage = "Something went wrong:  " + ex + " - " + ex.response.data.name;
                 });
-                
             },
             validateBeforeSubmit(e) {
                 this.$validator.validateAll();

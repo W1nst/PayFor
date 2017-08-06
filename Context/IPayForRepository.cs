@@ -18,8 +18,9 @@ namespace PayFor.Context
         Task<IEnumerable<Payment>> GetUserPayments(string userId);
         Task<bool> CreatePayment(Payment payment, string userId);
         Task<bool> DeletePayment(int id, string userId);
+        Task<bool> EditPayment(Payment id, string userId);
 
-        //Payments
+        //Categories
         Task<Category> GetCategory (int id, string userId);
         Task<IEnumerable<Category>> GetAllCategories(string userId);
         bool CreateCategory(Category category, string userId);
