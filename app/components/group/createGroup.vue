@@ -40,7 +40,7 @@
                 var vm = this;
                 vm.isBusy = true;
                 vm.errorMessage = '';
-                vm.$http.post('/api/group/',vm.newGroup)
+                vm.$http.post(vm.$apiHelper.groupBaseUrl, vm.newGroup)
                 .then(function(response){
                     vm.$router.push('groups');
                 }).catch(function(ex){

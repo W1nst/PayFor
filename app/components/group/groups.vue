@@ -86,7 +86,7 @@
                 if (!confirm('Are you sure you want to delete "'+ this.groups[index].name+'" thing from the database?')) return;
                 var vm = this;
                 vm.errorMessage = "";
-                vm.$http.post('/api/group/'+vm.groups[index].id+'/delete')
+                vm.$http.post(vm.$apiHelper.deleteGroupUrl(vm.groups[index].id))
                 .then(function(response){
                     vm.groups.splice(index, 1);
                 }).catch(function(ex){
@@ -96,7 +96,7 @@
             fetchGroups: function(){
                 var vm = this;
                 vm.isBusy = true;
-                vm.$http.get(`/api/group/`)
+                vm.$http.get(vm.$apiHelper.groupBaseUrl)
                     .then(function (response) {
                         vm.groups = response.data;
                         vm.isBusy = false;  

@@ -1,8 +1,9 @@
 var moment = require('moment');
+import config from './../config'
 
 module.exports = function (date, format) {
       if (!date) {
         return 'N/A'
       }
-      return moment(date, 'YYYY-MM-DD HH:mm:ss').format(format);
+      return moment(date, config.dateTimeFormat).format(format);
 };

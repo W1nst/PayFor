@@ -4,6 +4,8 @@ import VeeValidate from 'vee-validate'
 import axios from 'axios'
 import bootstrapdatepicker from 'bootstrap-datepicker'
 import moment from 'moment'
+import config from './config'
+import apiHelper from './helpers/apihelper'
 
 window.moment = moment;
 
@@ -11,6 +13,8 @@ Vue.use(VueRouter)
 Vue.use(VeeValidate)
 Vue.prototype.$http = axios
 Vue.prototype.$moment = moment
+Vue.prototype.$appConfig = config
+Vue.prototype.$apiHelper = apiHelper
 
 import isBusy from './components/shared/isBusy.vue'
 import mainwrapper from './components/mainwrapper.vue'

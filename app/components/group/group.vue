@@ -13,7 +13,9 @@
                                 <h3 class="title">Payments</h3> <router-link :to="{ name: 'addpayment'}" class="btn btn-primary btn-sm rounded">Add new</router-link> 
                             </div>
                         </div>
-                            <router-view></router-view>
+                        <transition name="component-fade" mode="out-in">
+                            <router-view :key="$route.fullPath"></router-view>
+                        </transition>
                         <ul class="item-list striped">
                             <li class="item item-list-header hidden-sm-down">
                                 <div class="item-row">
@@ -112,7 +114,7 @@
 </template>
 
 <script>
-    var moment = require('moment');
+    //var moment = require('moment');
     export default {
         props : ['groupId'],
         data () {
@@ -133,11 +135,12 @@
                 }
             },
             monthlyexpenses: function(){
-                if (this.loaded){
-                    return this.group.payments.
+                var vm = this;
+                if (vm.loaded){
+                    return vm.group.payments.
                         filter(function(payment){
-                            var paymentdate = moment(payment.date);
-                            var currentdate = moment();
+                            var paymentdate = vm.$moment(payment.date);
+                            var currentdate = vm.$moment();
                             return paymentdate.month() == currentdate.month() 
                                    && paymentdate.year() == currentdate.year()})
                         .reduce(function(prev, payment){
@@ -172,7 +175,7 @@
         methods: {
             fetchGroup: function(){
                 var vm = this;
-                vm.$http.get(`/api/group/`+vm.groupId)
+                vm.$http.get(vm.$apiHelper.getGroupUrl(vm.groupId))
                     .then(function (response) {
                         vm.group = response.data;
                         vm.loaded = true;
@@ -186,7 +189,7 @@
                 if (!confirm('Are you sure you want to delete "'+ this.group.payments[index].note+'" thing from the database?')) return;
                 var vm = this;
                 vm.errorMessage = "";
-                vm.$http.post('/api/payment/'+vm.group.payments[index].id+'/delete')
+                vm.$http.post(vm.$apiHelper.deletePaymentUrl(vm.group.payments[index].id))
                 .then(function(response){
                     vm.group.payments.splice(index, 1);
                 }).catch(function(ex){
@@ -202,3 +205,12 @@
         }  
     }
 </script>
+<style>
+.component-fade-enter-active, .component-fade-leave-active {
+  transition: opacity .3s ease;
+}
+.component-fade-enter, .component-fade-leave-to
+/* .component-fade-leave-active до версии 2.1.8 */ {
+  opacity: 0;
+}
+</style>
