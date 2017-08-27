@@ -6,8 +6,10 @@ import bootstrapdatepicker from 'bootstrap-datepicker'
 import moment from 'moment'
 import config from './config'
 import apiHelper from './helpers/apihelper'
+import authPlugin from './components/auth/AuthPlugin'
 
 window.moment = moment;
+
 
 Vue.use(VueRouter)
 Vue.use(VeeValidate)
@@ -25,6 +27,7 @@ import group from './components/group/group.vue'
 import sidebar from './components/sidebar.vue'
 import paymentrow from './components/payments/paymentRow.vue'
 import createpayment from './components/payments/createPayment.vue'
+import login from './components/auth/login.vue'
 
 Vue.component('sidebar', sidebar);
 Vue.component('mainwrapper', mainwrapper);
@@ -43,19 +46,28 @@ const router = new VueRouter({
         {
             name:'index',
             path:'/',
+            meta: { auth: true  },
             component: groups
         },{   
+            name: 'login',
+            path: '/login',    
+            meta: { auth: false  },      
+            component: login
+        },{   
             name: 'groups',
-            path: '/groups',          
+            path: '/groups',    
+            meta: { auth: true  },      
             component: groups
         },{   
             name: 'creategroup',
-            path: '/creategroup',     
+            path: '/creategroup',   
+            meta: { auth: true  },  
             component: createGroup 
         },{   
             name: 'group',
             path: '/group/:groupId',       
             component: group,
+            meta: { auth: true  },
             props:true,
             children:[{
                     name:'addpayment',
@@ -72,6 +84,8 @@ const router = new VueRouter({
         }
     ]
 });
+
+Vue.use(authPlugin,{router: router});
 
 const app = new Vue({
     router

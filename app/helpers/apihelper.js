@@ -21,5 +21,10 @@ export default {
     },
 
     //categories
-    categoryBaseUrl : '/api/category/'
+    categoryBaseUrl : '/api/category/',
+    //auth
+    authBaseUrl : '/auth/',
+    generateTokenUrl : function(){
+        return this.authBaseUrl + 'GenerateToken';
+    }
 }
