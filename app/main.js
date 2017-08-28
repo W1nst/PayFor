@@ -10,7 +10,6 @@ import authPlugin from './components/auth/AuthPlugin'
 
 window.moment = moment;
 
-
 Vue.use(VueRouter)
 Vue.use(VeeValidate)
 Vue.prototype.$http = axios
@@ -28,8 +27,10 @@ import sidebar from './components/sidebar.vue'
 import paymentrow from './components/payments/paymentRow.vue'
 import createpayment from './components/payments/createPayment.vue'
 import login from './components/auth/login.vue'
+import uheader from './components/header.vue'
 
 Vue.component('sidebar', sidebar);
+Vue.component('uheader', uheader);
 Vue.component('mainwrapper', mainwrapper);
 Vue.component('isBusy', isBusy);
 Vue.component('groups', groups);
@@ -42,6 +43,7 @@ Vue.component('createpayment',createpayment);
 Vue.filter('moment', require('./filters/moment'));
 
 const router = new VueRouter({
+    //mode: 'history',
     routes:[
         {
             name:'index',

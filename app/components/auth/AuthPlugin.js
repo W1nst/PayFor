@@ -5,33 +5,55 @@ export default {
           return {
             user: undefined,
             token: undefined,
+            isAuthenticated: false
           }
         },
         created: function() {
-          ApplyRouteGuard.call(this, options.router);
+            this.setAuth();
+            ApplyRouteGuard.call(this, options.router);
         },
         methods: {
             login(loginModel) {
                 var vm = this;
                 return new Promise(function(resolve, reject) {
-                    console.log(loginModel);
                     vm.$http.post(vm.$apiHelper.generateTokenUrl(), loginModel)
                     .then(function(response){
-                        vm.token = response.data.token;
-                        vm.user = response.data.name;
-                        vm.$http.defaults.headers.common['Authorization'] = 'Bearer '+response.data.token;
+                        vm.storeAuthData(response.data);
+                        vm.setAuth();    
                         resolve(true);
                     }).catch(function(ex){
-                        vm.token = undefined;
-                        vm.user = undefined;
-                        vm.$http.defaults.headers.common['Authorization'] = undefined;
+                        vm.logout();
                         resolve(false);
                     });
                 });
             },
+            storeAuthData(data){
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', data.name);
+            },
+            setAuth(){
+                var vm = this;
+                var token = localStorage.getItem('token');
+                var name = localStorage.getItem('user');
+                if(token && name) {
+                    vm.isAuthenticated = true;        
+                    vm.token = token;
+                    vm.user = name;
+                    vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+                }
+                else {
+                    vm.logout();   
+                }
+            },
             logout() {
+                var vm = this;
+                localStorage.removeItem('token')
+                localStorage.removeItem('user')
+                vm.isAuthenticated = false;        
                 vm.token = undefined;
                 vm.user = undefined;
+                vm.$http.defaults.headers.common['Authorization'] = undefined;
+                options.router.push({ name: 'login'});
             }
         }
       });
@@ -40,21 +62,20 @@ export default {
   
 function ApplyRouteGuard(router) {
     router.beforeEach((to, from, next) => {
-        let route = to.matched.find(e => e.meta.auth != null);
-        console.log(route);
-        if (route) {
-            let auth = route.meta.auth;
-            if (auth && !this.user) {
-                console.log('Access denied - only for authenticated users:', route.path);
-                //TODO: redirect to the login page
-                router.push({ name: 'login'});
-            } else if (!auth && this.user) {
-                console.log('Hide from authenticated users - only for guests:', route.path);
-                //TODO: disable, hide somehow
+        if (to.matched.some(record => record.meta.auth == true)) {
+            if (!this.isAuthenticated) {
+                next({name: 'login'})
             } else {
-                console.log('Appropriate route, user/guset has rights to visit:', route.path);
+                next()
             }
+        } else if (to.matched.some(record => record.meta.auth == false)){
+            if (this.isAuthenticated) {
+                next({name: 'groups'})
+            } else {
+                next();
+            }
+        } else {
+            next();
         }
-        next();
     });
 }

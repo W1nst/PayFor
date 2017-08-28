@@ -1,6 +1,11 @@
 ﻿<template>
     <div>
-        <sidebar></sidebar>
+        <transition name="component-fade" mode="out-in">
+            <uheader v-if="this.$auth.isAuthenticated"></uheader>
+        </transition>
+        <transition name="component-fade" mode="out-in">
+            <sidebar v-if="this.$auth.isAuthenticated"></sidebar>
+        </transition>
         <transition name="component-fade" mode="out-in">
             <router-view class="content"></router-view> 
         </transition>
