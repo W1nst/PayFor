@@ -9,7 +9,26 @@ export default {
           }
         },
         created: function() {
-            this.setAuth();
+            var vm = this;
+            vm.setAuth();
+
+            vm.$http.interceptors.response.use(function (response) {
+                // Do something with response data
+                return response;
+            }, function (error) {
+                //console.log (error);
+                // Do something with response error
+                return Promise.reject(error);
+            });
+            // vm.$http.interceptors.response.use(null,function(error) {
+            //     console.log (error);
+            //     if (error.status === 401) {
+            //         console.log ('WAS');
+            //         options.router.push({ name: 'login'});
+            //         return defaultResponse;
+            //     }
+            //     return Promise.reject(error);
+            // });
             ApplyRouteGuard.call(this, options.router);
         },
         methods: {
@@ -28,18 +47,18 @@ export default {
                 });
             },
             storeAuthData(data){
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('user', data.name);
+                sessionStorage.setItem('token', data.token);
+                sessionStorage.setItem('user', data.name);
             },
             setAuth(){
                 var vm = this;
-                var token = localStorage.getItem('token');
-                var name = localStorage.getItem('user');
+                var token = sessionStorage.getItem('token');
+                var name = sessionStorage.getItem('user');
                 if(token && name) {
                     vm.isAuthenticated = true;        
                     vm.token = token;
                     vm.user = name;
-                    vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+                    //vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
                 }
                 else {
                     vm.logout();   
@@ -47,8 +66,8 @@ export default {
             },
             logout() {
                 var vm = this;
-                localStorage.removeItem('token')
-                localStorage.removeItem('user')
+                sessionStorage.removeItem('token')
+                sessionStorage.removeItem('user')
                 vm.isAuthenticated = false;        
                 vm.token = undefined;
                 vm.user = undefined;

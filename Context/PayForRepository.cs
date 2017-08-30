@@ -36,6 +36,7 @@ namespace PayFor.Context
             var user = await _context.Users
                 .Include(x => x.UserGroups)
                 .ThenInclude(x => x.Group)
+                .ThenInclude(x=>x.AuthorUser)
                 .FirstOrDefaultAsync(u => u.Id == userId);
             return user.UserGroups.Select(x => x.Group).OrderByDescending(x=>x.CreateDateTime).Distinct().ToList();
         }

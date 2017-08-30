@@ -12,6 +12,7 @@ window.moment = moment;
 
 Vue.use(VueRouter)
 Vue.use(VeeValidate)
+
 Vue.prototype.$http = axios
 Vue.prototype.$moment = moment
 Vue.prototype.$appConfig = config
