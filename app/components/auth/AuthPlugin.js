@@ -12,10 +12,8 @@ export default {
             var vm = this;
             vm.setAuth();
             vm.$http.interceptors.response.use(null,function(error) {
-                console.log (error);
-                if (error.status === 401) {
-                    console.log ('WAS');
-                    options.router.push({ name: 'login'});
+                if (error.message.indexOf ('401') !== -1) {
+                    vm.logout();
                     return defaultResponse;
                 }
                 return Promise.reject(error);
@@ -49,7 +47,7 @@ export default {
                     vm.isAuthenticated = true;        
                     vm.token = token;
                     vm.user = name;
-                    //vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+                    vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
                 }
                 else {
                     vm.logout();   
