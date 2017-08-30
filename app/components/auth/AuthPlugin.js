@@ -11,24 +11,15 @@ export default {
         created: function() {
             var vm = this;
             vm.setAuth();
-
-            vm.$http.interceptors.response.use(function (response) {
-                // Do something with response data
-                return response;
-            }, function (error) {
-                //console.log (error);
-                // Do something with response error
+            vm.$http.interceptors.response.use(null,function(error) {
+                console.log (error);
+                if (error.status === 401) {
+                    console.log ('WAS');
+                    options.router.push({ name: 'login'});
+                    return defaultResponse;
+                }
                 return Promise.reject(error);
             });
-            // vm.$http.interceptors.response.use(null,function(error) {
-            //     console.log (error);
-            //     if (error.status === 401) {
-            //         console.log ('WAS');
-            //         options.router.push({ name: 'login'});
-            //         return defaultResponse;
-            //     }
-            //     return Promise.reject(error);
-            // });
             ApplyRouteGuard.call(this, options.router);
         },
         methods: {
