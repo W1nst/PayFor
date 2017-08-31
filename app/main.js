@@ -28,6 +28,7 @@ import sidebar from './components/sidebar.vue'
 import paymentrow from './components/payments/paymentRow.vue'
 import createpayment from './components/payments/createPayment.vue'
 import login from './components/auth/login.vue'
+import signUp from './components/auth/signUp.vue'
 import uheader from './components/header.vue'
 
 Vue.component('sidebar', sidebar);
@@ -56,6 +57,11 @@ const router = new VueRouter({
             path: '/login',    
             meta: { auth: false  },      
             component: login
+        },{   
+            name: 'signUp',
+            path: '/signUp',    
+            meta: { auth: false  },      
+            component: signUp
         },{   
             name: 'groups',
             path: '/groups',    

@@ -55,28 +55,10 @@ namespace PayFor.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null)
-                {
-                    var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-                    if (result.Succeeded)
-                    {
-                        var claims = await GetValidClaims(user);
-
-                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
-                        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                        var token = new JwtSecurityToken(_config["Tokens:Issuer"],
-                            _config["Tokens:Issuer"],
-                            claims,
-                            expires: DateTime.Now.AddDays(30),
-                            signingCredentials: creds);
-
-                        return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) , name = user.UserName});
-                    }
-                }
+                var token = await CreateToken(model.Email,model.Password);
+                if (token != null) return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token)});
             }
-            return BadRequest("Could not create token");
+            return BadRequest("Incorrect email/password!");
         }
 
         [HttpPost]
@@ -95,7 +77,8 @@ namespace PayFor.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 
                 if (result.Succeeded){
-                    return RedirectToAction("GenerateToken",new LoginViewModel{Email = model.Email, Password=model.Password});
+                    var token = await CreateToken(model.Email,model.Password);
+                    if (token != null) return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token)});
                 }
                 return BadRequest("Something went wrong!");
             }
@@ -116,6 +99,24 @@ namespace PayFor.Controllers
             if (User.Identity.IsAuthenticated)
                await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        private async Task<JwtSecurityToken> CreateToken(string email, string password){
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return null;
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
+            if (!result.Succeeded) return null;
+            
+            var claims = await GetValidClaims(user);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            return new JwtSecurityToken(_config["Tokens:Issuer"],
+                _config["Tokens:Issuer"],
+                claims,
+                expires: DateTime.Now.AddDays(30),
+                signingCredentials: creds);
         }
 
         private async Task<List<Claim>> GetValidClaims(User user)

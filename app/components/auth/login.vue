@@ -12,12 +12,12 @@
                             <p class="text-danger" v-if="errorMessage">{{errorMessage}}</p>
                             <div class="form-group"> 
                                 <label for="username">Email</label> 
-                                <input type="email" class="form-control underlined" v-validate="'required'" v-model="loginModel.email" name="Email" id="pEmail" placeholder="Your email address" required="" aria-required="true"> 
+                                <input type="email" class="form-control underlined" v-validate="'required|email'" v-model="loginModel.email" name="Email" id="pEmail" placeholder="Your email address" required="" aria-required="true"> 
                                 <span class="text-danger" v-if="errors.has('Email')">{{ errors.first('Email') }}</span>
                             </div>
                             <div class="form-group"> 
                                 <label for="password">Password</label> 
-                                <input type="password" class="form-control underlined" v-model="loginModel.password" name="Password" id="pPassword" placeholder="Your password" required="" aria-required="true"> </div>
+                                <input type="password" class="form-control underlined" v-model="loginModel.password" v-validate="'required'" name="Password" id="pPassword" placeholder="Your password" required="" aria-required="true"> </div>
                                 <span class="text-danger" v-if="errors.has('Password')">{{ errors.first('Password') }}</span>
                             <div class="form-group"> <label for="remember">
             <input class="checkbox" id="remember" type="checkbox"> 
@@ -25,7 +25,7 @@
           </label> <a href="reset.html" class="forgot-btn pull-right">Forgot password?</a> </div>
                             <div class="form-group"> <button type="submit" class="btn btn-block btn-primary">Login</button> </div>
                             <div class="form-group">
-                                <p class="text-muted text-xs-center">Do not have an account? <a href="signup.html">Sign Up!</a></p>
+                                <p class="text-muted text-xs-center">Do not have an account? <router-link :to="{ name: 'signUp'}">Sign Up!</router-link></p>
                             </div>
                         </form>
                     </div>
@@ -50,13 +50,14 @@ export default {
     methods:{
         login: function(){
             var vm = this;
-            vm.$auth.login(vm.loginModel).then(function(result) {
-                if (result){
+            vm.$auth.login(vm.loginModel).then(
+                function(result) {
                     vm.$router.push({ name: 'groups'});
-                }else{
-                    vm.errorMessage = 'Incorrect email or password!';
+                },
+                function(reject){
+                    vm.errorMessage = reject.response.data;
                 }
-            });
+            );
             
         },
         validateBeforeSubmit(e) {

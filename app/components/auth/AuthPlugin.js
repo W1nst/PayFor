@@ -3,7 +3,6 @@ export default {
       Vue.prototype.$auth = new Vue({
         data: function() {
           return {
-            user: undefined,
             token: undefined,
             isAuthenticated: false
           }
@@ -12,7 +11,7 @@ export default {
             var vm = this;
             vm.setAuth();
             vm.$http.interceptors.response.use(null,function(error) {
-                if (error.message.indexOf ('401') !== -1) {
+                if (error.response.status === 401) {
                     vm.logout();
                     return defaultResponse;
                 }
@@ -29,9 +28,8 @@ export default {
                         vm.storeAuthData(response.data);
                         vm.setAuth();    
                         resolve(true);
-                    }).catch(function(ex){
-                        vm.logout();
-                        resolve(false);
+                    }).catch(function(error){
+                        reject(error);
                     });
                 });
             },
@@ -43,24 +41,20 @@ export default {
                         vm.storeAuthData(response.data);
                         vm.setAuth();    
                         resolve(true);
-                    }).catch(function(ex){
-                        vm.logout();
-                        resolve(false);
+                    }).catch(function(error){
+                        reject(error);
                     });
                 });
             },
             storeAuthData(data){
                 sessionStorage.setItem('token', data.token);
-                sessionStorage.setItem('user', data.name);
             },
             setAuth(){
                 var vm = this;
                 var token = sessionStorage.getItem('token');
-                var name = sessionStorage.getItem('user');
-                if(token && name) {
+                if(token) {
                     vm.isAuthenticated = true;        
                     vm.token = token;
-                    vm.user = name;
                     vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
                 }
                 else {
@@ -69,11 +63,9 @@ export default {
             },
             logout() {
                 var vm = this;
-                sessionStorage.removeItem('token')
-                sessionStorage.removeItem('user')
+                sessionStorage.removeItem('token');
                 vm.isAuthenticated = false;        
                 vm.token = undefined;
-                vm.user = undefined;
                 vm.$http.defaults.headers.common['Authorization'] = undefined;
                 options.router.push({ name: 'login'});
             }
@@ -88,7 +80,7 @@ function ApplyRouteGuard(router) {
             if (!this.isAuthenticated) {
                 next({name: 'login'})
             } else {
-                next()
+                next();
             }
         } else if (to.matched.some(record => record.meta.auth == false)){
             if (this.isAuthenticated) {

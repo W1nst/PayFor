@@ -97,7 +97,7 @@ export default {
     },
     computed: {
         userName:function(){
-            return this.$auth.user;
+            return this.$auth.token[1];
         }
     },
     methods:{
