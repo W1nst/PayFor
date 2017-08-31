@@ -35,6 +35,20 @@ export default {
                     });
                 });
             },
+            signUp(signUpModel){
+                var vm = this;
+                return new Promise(function(resolve, reject) {
+                    vm.$http.post(vm.$apiHelper.signUpUrl(), signUpModel)
+                    .then(function(response){
+                        vm.storeAuthData(response.data);
+                        vm.setAuth();    
+                        resolve(true);
+                    }).catch(function(ex){
+                        vm.logout();
+                        resolve(false);
+                    });
+                });
+            },
             storeAuthData(data){
                 sessionStorage.setItem('token', data.token);
                 sessionStorage.setItem('user', data.name);

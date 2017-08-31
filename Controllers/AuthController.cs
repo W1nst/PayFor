@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json;
+using AutoMapper;
 using PayFor.Models;
 using PayFor.ViewModels;
 
@@ -30,14 +31,6 @@ namespace PayFor.Controllers
             _signInManager = signInManager;
             _userManager = userManager;
             _config = config;
-        }
-
-        public ActionResult Login()
-        {
-            if (User.Identity.IsAuthenticated)
-                return RedirectToAction("Index", "Home");
-
-            return View();
         }
 
         [HttpPost]
@@ -85,6 +78,46 @@ namespace PayFor.Controllers
             }
             return BadRequest("Could not create token");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SignUp([FromBody] SignUpViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (await _userManager.FindByEmailAsync(model.Email) != null) return BadRequest("This email already used!");
+                
+                var user = new User() { 
+                    UserName = model.FirstName, 
+                    Email = model.Email,
+                    FirstName =  model.FirstName ,
+                    LastName =  model.LastName
+                };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                
+                if (result.Succeeded){
+                    return RedirectToAction("GenerateToken",new LoginViewModel{Email = model.Email, Password=model.Password});
+                }
+                return BadRequest("Something went wrong!");
+            }
+            return BadRequest("Fill all required fields!");
+        }
+
+        //not used
+        public ActionResult Login()
+        {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
+
+            return View();
+        }
+        //not used
+        public async  Task<ActionResult> Logout()
+        {
+            if (User.Identity.IsAuthenticated)
+               await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
         private async Task<List<Claim>> GetValidClaims(User user)
         {
             IdentityOptions _options = new IdentityOptions();
@@ -112,12 +145,6 @@ namespace PayFor.Controllers
             //     }
             // }
             return claims;
-        }
-        public async  Task<ActionResult> Logout()
-        {
-            if (User.Identity.IsAuthenticated)
-               await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
         }
     }
 }

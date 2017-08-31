@@ -26,5 +26,8 @@ export default {
     authBaseUrl : '/auth/',
     generateTokenUrl : function(){
         return this.authBaseUrl + 'GenerateToken';
+    },
+    signUpUrl : function(){
+        return this.authBaseUrl + 'SignUp';
     }
 }
