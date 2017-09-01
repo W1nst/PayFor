@@ -56,8 +56,10 @@ namespace PayFor.Context
 
         public async Task<bool> DeleteGroup(int id, string userId)
         {
-            if (!await IsGroupOwner(id, userId)) return false;
-            _context.Groups.Remove(_context.Groups.FirstOrDefault(x => x.Id == id));
+            //if (!await IsGroupOwner(id, userId)) return false;
+            var group = await _context.Groups.FirstOrDefaultAsync(x => x.Id == id && x.AuthorUserId == userId);
+            if (group == null) return false;
+            _context.Groups.Remove(group);
             return true;
         }
 
@@ -132,20 +134,16 @@ namespace PayFor.Context
         //Other
         async Task<bool> IsInGroup(int groupId, string userId)
         {
-            var user = await _context.Users
-                .Include(x => x.UserGroups)
-                .FirstOrDefaultAsync(u => u.Id == userId);
-            return user.UserGroups.Any(x => x.GroupId == groupId);
+            var exist = await _context.UserGroup
+                .AnyAsync(x=>x.UserId == userId && x.GroupId == groupId);
+            return exist;
         }
 
         async Task<bool> IsGroupOwner(int groupId, string userId)
         {
-            var group = await _context.Groups
-                    .Include(x => x.AuthorUser)
-                    .FirstOrDefaultAsync(x => x.Id == groupId);
-            if (group == null)
-                return false;
-            return @group.AuthorUser != null && @group.AuthorUser.Id == userId;
+            var exist = await _context.Groups
+                .AnyAsync(x => x.Id == groupId && x.AuthorUserId == userId);
+            return exist;
         }
 
         public async Task<bool> SaveChangesAsync()

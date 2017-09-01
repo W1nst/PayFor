@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using PayFor.Context;
 using PayFor.Models;
 using PayFor.ViewModels;
+using PayFor.ExtensionMethods;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -41,7 +42,7 @@ namespace PayFor.Controllers.Api
             {
                 _logger.LogError($"Failed to get all user Categorys: {ex}");
             }
-            return BadRequest("Error while getting all user Categorys!");
+            return BadRequest(new ErrorResponseViewModel {Message="Error while getting all user Categorys!"});
         }
 
         // GET api/values/5
@@ -52,14 +53,14 @@ namespace PayFor.Controllers.Api
             { 
                 var Category = await _repository.GetCategory(id, _userManager.GetUserId(this.User));
                 if (Category == null)
-                    return StatusCode(403);
+                    return StatusCode(403, new ErrorResponseViewModel {Message="Do not have premission for this action!"});
                 return Ok(Mapper.Map<CategoryViewModel>(Category));
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Failed to get Category: {ex}");
             }
-            return BadRequest("Error while getting Category!");
+            return BadRequest(new ErrorResponseViewModel {Message="Error while getting Category!"});
         }
 
         [HttpPost("")]
@@ -67,10 +68,11 @@ namespace PayFor.Controllers.Api
         {
             try { 
                 if (!ModelState.IsValid || Category == null)
-                    return BadRequest(ModelState);
+                    return BadRequest(new ErrorResponseViewModel {Message = ModelState.ErrorsToString()});
+                
                 var newCategory = Mapper.Map<Category>(Category);
                 if (_repository.CreateCategory(newCategory, _userManager.GetUserId(this.User)))
-                    return StatusCode(403);
+                    return StatusCode(403, new ErrorResponseViewModel {Message="Do not have premission for this action!"});
                 if (await _repository.SaveChangesAsync())
                     return await GetCategory(newCategory.Id);
             }
@@ -78,7 +80,7 @@ namespace PayFor.Controllers.Api
             {
                 _logger.LogError($"Failed to create Category: {ex}");
             }
-            return BadRequest("Error while creating Category!");
+            return BadRequest(new ErrorResponseViewModel {Message="Error while creating Category!"});
         }
 
         // POST api/values
@@ -87,7 +89,7 @@ namespace PayFor.Controllers.Api
         {
             try { 
                 if (!await _repository.DeleteCategory(id, _userManager.GetUserId(this.User)))
-                    return StatusCode(403);
+                    return StatusCode(403, new ErrorResponseViewModel {Message="Do not have premission for this action!"});
                 if (await _repository.SaveChangesAsync())
                     return Ok();
             }
@@ -95,7 +97,7 @@ namespace PayFor.Controllers.Api
             {
                 _logger.LogError($"Failed to delete Category: {ex}");
             }
-            return BadRequest("Error while deleting Category!");
+            return BadRequest(new ErrorResponseViewModel {Message="Error while deleting Category!"});
         }
     }
 }

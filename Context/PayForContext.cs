@@ -22,7 +22,7 @@ namespace PayFor.Context
         public DbSet<Payment> Payments { get; set; } 
         public DbSet<Group> Groups { get; set; }
         public DbSet<Category> Categories { get; set; }
-        
+        public DbSet<UserGroup> UserGroup { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

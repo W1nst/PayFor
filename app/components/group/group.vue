@@ -181,8 +181,8 @@
                         vm.loaded = true;
                     })
                     .catch(function (error) {
-                        console.log(error); 
-                        vm.$router.replace('/groups');   
+                        console.log(error.response.data.message); 
+                        vm.$router.push('/groups');   
                     });
             },
             deletePayment:function(index){
@@ -192,8 +192,8 @@
                 vm.$http.post(vm.$apiHelper.deletePaymentUrl(vm.group.payments[index].id))
                 .then(function(response){
                     vm.group.payments.splice(index, 1);
-                }).catch(function(ex){
-                    vm.errorMessage = "Something went wrong: "+ ex;
+                }).catch(function(error){
+                    vm.errorMessage = "Something went wrong: "+ error.response.data.message;
                 });       
             },
         },

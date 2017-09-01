@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using PayFor.Context;
 using PayFor.Models;
 using PayFor.ViewModels;
+using PayFor.ExtensionMethods;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -42,7 +44,7 @@ namespace PayFor.Controllers.Api
             {
                 _logger.LogError($"Failed to get all groups: {ex}");
             }
-            return BadRequest("Error while getting all Groups!");
+            return BadRequest(new ErrorResponseViewModel {Message="Error while getting all Groups!"});
 
         }
 
@@ -52,7 +54,9 @@ namespace PayFor.Controllers.Api
         {
             try
             { 
-                if (!ModelState.IsValid || groupRow == null) return BadRequest(ModelState);
+                if (!ModelState.IsValid || groupRow == null)
+                    return BadRequest(new ErrorResponseViewModel {Message = ModelState.ErrorsToString()});
+                
                 var newGroup = Mapper.Map<Group>(groupRow);
                 await _repository.CreateGroup(newGroup, _userManager.GetUserId(this.User));
                 if (await _repository.SaveChangesAsync())
@@ -62,7 +66,7 @@ namespace PayFor.Controllers.Api
             {
                 _logger.LogError($"Failed to create group: {ex}");
             }
-            return BadRequest("Error while create Group!");
+            return BadRequest(new ErrorResponseViewModel {Message="Error while create Group!"});
         }
 
         //POST Delete group
@@ -72,7 +76,7 @@ namespace PayFor.Controllers.Api
             try
             {
                 if (!await _repository.DeleteGroup(groupId, _userManager.GetUserId(this.User)))
-                    return StatusCode(403);
+                    return StatusCode(403, new ErrorResponseViewModel {Message="Do not have premission for this action!"});
                 if (await _repository.SaveChangesAsync())
                     return Ok();
             }
@@ -80,7 +84,7 @@ namespace PayFor.Controllers.Api
             {
                 _logger.LogError($"Failed to delete group: {ex}");
             }
-            return BadRequest("Error while delete Group!");
+            return BadRequest(new ErrorResponseViewModel {Message="Error while delete Group!"});
         }
 
 
@@ -92,14 +96,14 @@ namespace PayFor.Controllers.Api
             { 
                 var group = await _repository.GetGroup(groupId, _userManager.GetUserId(this.User));
                 if (group == null)
-                    return StatusCode(403);
+                    return StatusCode(403, new ErrorResponseViewModel {Message="Do not have premission for this action!"});
                 return Ok(Mapper.Map<GroupViewModel>(group));
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Failed to get group: {ex}");
             }
-            return BadRequest("Error while getting Group!");
+            return BadRequest(new ErrorResponseViewModel {Message="Error while getting Group!"});
         }
     }
 }

@@ -3,7 +3,7 @@
         <div class="auth-container">
             <div class="card">
                 <header class="auth-header">
-                    <h1 class="auth-title"><div class="logo"><span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> ModularAdmin </h1>
+                    <h1 class="auth-title"><div class="logo"><span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> PayFor </h1>
                 </header>
                 <div class="auth-content">
                     <p class="text-xs-center">SIGNUP TO GET INSTANT ACCESS</p>
@@ -13,34 +13,34 @@
                             <label for="firstname">Name</label>
                             <div class="row">
                                 <div class="col-sm-6"> 
-                                    <input type="text" class="form-control underlined" v-model="signUpModel.firstName" name="firstname"  v-validate="'required'" id="firstname" placeholder="Enter firstname" required=""> 
+                                    <input type="text" class="form-control underlined" v-model="signUpModel.firstName" name="firstname"  v-validate="'required'" id="firstname" placeholder="Enter firstname"> 
                                     <span class="text-danger" v-if="errors.has('firstname')">{{ errors.first('firstname') }}</span>
                                 </div>
                                 <div class="col-sm-6"> 
-                                    <input type="text" class="form-control underlined" v-model="signUpModel.lastName" name="lastname" id="lastname" placeholder="Enter lastname" required=""> 
+                                    <input type="text" class="form-control underlined" v-model="signUpModel.lastName" name="lastname" id="lastname" placeholder="Enter lastname"> 
                                 </div>
                             </div>
                         </div>
                         <div class="form-group"> 
                             <label for="email">Email</label> 
-                            <input type="email" class="form-control underlined" v-model="signUpModel.email" name="email" id="email" v-validate="'required|email'" placeholder="Enter email address" required=""> 
+                            <input type="email" class="form-control underlined" v-model="signUpModel.email" name="email" id="email" v-validate="'required|email'" placeholder="Enter email address"> 
                             <span class="text-danger" v-if="errors.has('email')">{{ errors.first('email') }}</span>
                         </div>
                         <div class="form-group"> <label for="password">Password</label>
                             <div class="row">
                                 <div class="col-sm-6"> 
-                                    <input type="password" class="form-control underlined" v-model="signUpModel.password" name="password" id="password" v-validate="'required'" placeholder="Enter password" required=""> 
+                                    <input type="password" class="form-control underlined" v-model="signUpModel.password" name="password" id="password" v-validate="'required'" placeholder="Enter password"> 
                                     <span class="text-danger" v-if="errors.has('password')">{{ errors.first('password') }}</span>
                                 </div>
                                 <div class="col-sm-6"> 
-                                    <input type="password" class="form-control underlined" v-model="signUpModel.retype_password" name="retype_password" id="retype_password" v-validate="'required|confirmed:password'" placeholder="Re-type password" required=""> 
+                                    <input type="password" class="form-control underlined" v-model="signUpModel.retype_password" name="retype_password" id="retype_password" v-validate="'required|confirmed:password'" placeholder="Re-type password"> 
                                     <span class="text-danger" v-if="errors.has('retype_password')">{{ errors.first('retype_password') }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group"> 
                             <label for="agree">
-                                <input class="checkbox" name="agree" id="agree" type="checkbox" v-validate="'required'" v-model="agree"> 
+                                <input class="checkbox" name="agree" id="agree" type="checkbox" v-validate="'required'"> 
                                 <span>Agree the terms and <a href="#">policy</a></span>
                                 <span class="text-danger" v-if="errors.has('agree')">{{ errors.first('agree') }}</span>
                             </label> 
@@ -51,11 +51,6 @@
                         </div>
                     </form>
                 </div>
-            </div>
-            <div class="text-xs-center"> 
-                <a href="index.html" class="btn btn-secondary rounded btn-sm">
-                    <i class="fa fa-arrow-left"></i> Back to dashboard
-                </a> 
             </div>
         </div>
     </div>
@@ -71,7 +66,6 @@ export default {
                 password:'',
                 retype_password:''
             },
-            agree:'',
             errorMessage:''
         }
     },
@@ -82,8 +76,8 @@ export default {
                 function(result) {
                     vm.$router.push({ name: 'groups'});
                 },
-                function(reject){
-                    vm.errorMessage = reject.response.data;
+                function(error){
+                    vm.errorMessage = error.response.data.message;
                 }   
             );
         },

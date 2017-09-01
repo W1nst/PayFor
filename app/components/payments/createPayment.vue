@@ -102,8 +102,8 @@ export default {
                 vm.payment = response.data;
                 vm.payment.date = vm.$moment(vm.payment.date, vm.$appConfig.dateTimeFormat).format('L');
                 vm.payment.categoryId = response.data.category.id;
-            }).catch(function(ex){
-                vm.errorMessage = "Something went wrong: "+ ex;
+            }).catch(function(error){
+                vm.errorMessage = "Something went wrong: "+ error.response.data.message;
             });
         },
         processPayment: function(){
@@ -112,8 +112,8 @@ export default {
             vm.$http.post(vm.actionlink, vm.payment)
             .then(function(response){
                 vm.$router.push({ name: 'group', params: { groupId: vm.$route.params.groupId }});
-            }).catch(function(ex){
-                vm.errorMessage = "Something went wrong: "+ ex;
+            }).catch(function(error){
+                vm.errorMessage = "Something went wrong: "+ error.response.data.message;
             });
         },
         fetchCategories: function(){
@@ -123,7 +123,7 @@ export default {
                 vm.categories = response.data;
             })
             .catch(function (error) {
-                errorMessage= 'Error while loading categories: ' + error;    
+                errorMessage= 'Error while loading categories: ' + error.response.data.message;    
             });
         },
         validateBeforeSubmit(e) {

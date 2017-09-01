@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using PayFor.Context;
 using PayFor.Models;
 using PayFor.ViewModels;
+using PayFor.ExtensionMethods;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -41,7 +42,7 @@ namespace PayFor.Controllers.Api
             {
                 _logger.LogError($"Failed to get all user payments: {ex}");
             }
-            return BadRequest("Error while getting all user payments!");
+            return BadRequest(new ErrorResponseViewModel {Message="Error while getting all user payments!"});
         }
 
         // GET api/values/5
@@ -52,14 +53,14 @@ namespace PayFor.Controllers.Api
             { 
                 var payment = await _repository.GetPayment(pid, _userManager.GetUserId(this.User));
                 if (payment == null)
-                    return StatusCode(403);
+                    return StatusCode(403, new ErrorResponseViewModel {Message="Do not have premission for this action!"});
                 return Ok(Mapper.Map<PaymentViewModel>(payment));
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Failed to get payment: {ex}");
             }
-            return BadRequest("Error while getting payment!");
+            return BadRequest(new ErrorResponseViewModel {Message="Error while getting payment!"});
         }
 
         [HttpPost("")]
@@ -67,10 +68,11 @@ namespace PayFor.Controllers.Api
         {
             try { 
                 if (!ModelState.IsValid || payment == null)
-                    return BadRequest(ModelState);
+                    return BadRequest(new ErrorResponseViewModel {Message = ModelState.ErrorsToString()});
+                
                 var newPayment = Mapper.Map<Payment>(payment);
                 if (!await _repository.CreatePayment(newPayment, _userManager.GetUserId(this.User)))
-                    return StatusCode(403);
+                    return StatusCode(403, new ErrorResponseViewModel {Message="Do not have premission for this action!"});
                 if (await _repository.SaveChangesAsync())
                     return await GetPayment(newPayment.Id);
             }
@@ -78,7 +80,7 @@ namespace PayFor.Controllers.Api
             {
                 _logger.LogError($"Failed to create payment: {ex}");
             }
-            return BadRequest("Error while creating payment!");
+            return BadRequest(new ErrorResponseViewModel {Message="Error while creating payment!"});
         }
 
         // POST api/values
@@ -87,7 +89,7 @@ namespace PayFor.Controllers.Api
         {
             try { 
                 if (!await _repository.DeletePayment(pId, _userManager.GetUserId(this.User)))
-                    return StatusCode(403);
+                    return StatusCode(403, new ErrorResponseViewModel {Message="Do not have premission for this action!"});
                 if (await _repository.SaveChangesAsync())
                     return Ok();
             }
@@ -95,7 +97,7 @@ namespace PayFor.Controllers.Api
             {
                 _logger.LogError($"Failed to delete payment: {ex}");
             }
-            return BadRequest("Error while deleting payment!");
+            return BadRequest(new ErrorResponseViewModel {Message="Error while deleting payment!"});
         }
 
         [HttpPost("{pId}/edit")]
@@ -104,7 +106,7 @@ namespace PayFor.Controllers.Api
             try { 
                 var p = Mapper.Map<Payment>(payment);
                 if (!await _repository.EditPayment(p, _userManager.GetUserId(this.User)))
-                    return StatusCode(403);
+                    return StatusCode(403, new ErrorResponseViewModel {Message="Do not have premission for this action!"});
                 if (await _repository.SaveChangesAsync())
                     return Ok();
             }
@@ -112,7 +114,7 @@ namespace PayFor.Controllers.Api
             {
                 _logger.LogError($"Failed to delete payment: {ex}");
             }
-            return BadRequest("Error while deleting payment!");
+            return BadRequest(new ErrorResponseViewModel {Message="Error while deleting payment!"});
         }
     }
 }

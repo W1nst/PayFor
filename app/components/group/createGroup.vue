@@ -43,8 +43,8 @@
                 vm.$http.post(vm.$apiHelper.groupBaseUrl, vm.newGroup)
                 .then(function(response){
                     vm.$router.push('groups');
-                }).catch(function(ex){
-                    vm.errorMessage = "Something went wrong:  " + ex + " - " + ex.response.data.name;
+                }).catch(function(error){
+                    vm.errorMessage = "Something went wrong:  " + error.response.data.message;
                 });
             },
             validateBeforeSubmit(e) {

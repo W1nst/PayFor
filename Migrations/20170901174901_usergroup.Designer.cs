@@ -11,9 +11,10 @@ using System;
 namespace PayFor.Migrations
 {
     [DbContext(typeof(PayForContext))]
-    partial class PayForContextModelSnapshot : ModelSnapshot
+    [Migration("20170901174901_usergroup")]
+    partial class usergroup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using AutoMapper;
 using PayFor.Models;
 using PayFor.ViewModels;
+using PayFor.ExtensionMethods;
 
 namespace PayFor.Controllers
 {
@@ -32,73 +33,41 @@ namespace PayFor.Controllers
             _userManager = userManager;
             _config = config;
         }
-
-        [HttpPost]
-        public async Task<ActionResult> Login(LoginViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null)
-                {
-                    var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
-                    if (signInResult.Succeeded)
-                        return RedirectToAction("Index", "Home");
-                }
-                ModelState.AddModelError("","Incorrect UserName or Password!");
-            }
-            return View();
-        } 
     
         [HttpPost]
         public async Task<IActionResult> GenerateToken([FromBody] LoginViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                var token = await CreateToken(model.Email,model.Password);
-                if (token != null) return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token)});
-            }
-            return BadRequest("Incorrect email/password!");
+            if (!ModelState.IsValid || model == null) 
+                return BadRequest(new ErrorResponseViewModel {Message = ModelState.ErrorsToString()});
+            
+            var token = await CreateToken(model.Email,model.Password);
+            if (token != null) return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token)});
+            
+            return BadRequest(new ErrorResponseViewModel {Message="Incorrect email/password!"});
         }
 
         [HttpPost]
         public async Task<IActionResult> SignUp([FromBody] SignUpViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                if (await _userManager.FindByEmailAsync(model.Email) != null) return BadRequest("This email already used!");
-                
-                var user = new User() { 
-                    UserName = model.FirstName, 
-                    Email = model.Email,
-                    FirstName =  model.FirstName ,
-                    LastName =  model.LastName
-                };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                
-                if (result.Succeeded){
-                    var token = await CreateToken(model.Email,model.Password);
-                    if (token != null) return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token)});
-                }
-                return BadRequest("Something went wrong!");
+            if (!ModelState.IsValid || model == null) 
+                return BadRequest(new ErrorResponseViewModel {Message = ModelState.ErrorsToString()});
+            
+            if (await _userManager.FindByEmailAsync(model.Email) != null) 
+                return BadRequest(new ErrorResponseViewModel {Message="This email already used!"});
+            
+            var user = new User() { 
+                UserName = model.FirstName, 
+                Email = model.Email,
+                FirstName =  model.FirstName ,
+                LastName =  model.LastName
+            };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            
+            if (result.Succeeded){
+                var token = await CreateToken(model.Email,model.Password);
+                if (token != null) return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token)});
             }
-            return BadRequest("Fill all required fields!");
-        }
-
-        //not used
-        public ActionResult Login()
-        {
-            if (User.Identity.IsAuthenticated)
-                return RedirectToAction("Index", "Home");
-
-            return View();
-        }
-        //not used
-        public async  Task<ActionResult> Logout()
-        {
-            if (User.Identity.IsAuthenticated)
-               await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return BadRequest(new ErrorResponseViewModel {Message="Something went wrong!"});
         }
 
         private async Task<JwtSecurityToken> CreateToken(string email, string password){

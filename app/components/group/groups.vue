@@ -89,8 +89,9 @@
                 vm.$http.post(vm.$apiHelper.deleteGroupUrl(vm.groups[index].id))
                 .then(function(response){
                     vm.groups.splice(index, 1);
-                }).catch(function(ex){
-                    vm.errorMessage = "Something went wrong: "+ ex;
+                }).catch(function(error){
+                    console.log(error.response.data.message);
+                    vm.errorMessage = "Something went wrong: "+ error.response.data.message;
                 });       
             },
             fetchGroups: function(){
@@ -102,7 +103,7 @@
                         vm.isBusy = false;  
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        console.log(error.response.data.message);
                         vm.isBusy = false;      
                     });
             }
