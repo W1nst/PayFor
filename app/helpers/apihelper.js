@@ -29,5 +29,7 @@ export default {
     },
     signUpUrl : function(){
         return this.authBaseUrl + 'SignUp';
-    }
+    },
+    //user
+    userBaseUrl : '/api/user/'
 }

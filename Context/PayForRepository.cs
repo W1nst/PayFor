@@ -131,6 +131,16 @@ namespace PayFor.Context
             return true;
         }
 
+        //User
+        public async Task<User> GetUser(string userId){
+            return await _context.Users
+                .Include(x => x.UserGroups)
+                .ThenInclude(x => x.Group)
+                .Include(x=>x.Payments)
+                .ThenInclude(x=>x.Category)
+                .FirstOrDefaultAsync(x=>x.Id == userId);
+        }
+
         //Other
         async Task<bool> IsInGroup(int groupId, string userId)
         {

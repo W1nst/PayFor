@@ -114,7 +114,6 @@
 </template>
 
 <script>
-    //var moment = require('moment');
     export default {
         props : ['groupId'],
         data () {

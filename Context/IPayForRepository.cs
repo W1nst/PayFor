@@ -25,9 +25,9 @@ namespace PayFor.Context
         Task<IEnumerable<Category>> GetAllCategories(string userId);
         bool CreateCategory(Category category, string userId);
         Task<bool> DeleteCategory(int id, string userId);
-        
-        
 
+        //Users
+        Task<User> GetUser (string userId);
 
         Task<bool> SaveChangesAsync();
     }

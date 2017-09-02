@@ -86,6 +86,8 @@ namespace PayFor
             {
                 config.CreateMap<User, LoginViewModel>().ReverseMap();
                 config.CreateMap<User, UserRowViewModel>();
+                config.CreateMap<User, UserViewModel>().ForMember(dst=> dst.Groups,
+                    op=>op.MapFrom(src => src.UserGroups.Select(x=>x.Group)));
                 config.CreateMap<Group, GroupViewModel>()
                     .ForMember(dst => dst.Users,
                         op => op.MapFrom(src => src.UserGroups.Select(x=>x.User)));

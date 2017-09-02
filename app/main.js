@@ -26,12 +26,14 @@ import groups from './components/group/groups.vue'
 import groupRow from './components/group/groupRow.vue'
 import createGroup from './components/group/createGroup.vue'
 import group from './components/group/group.vue'
+import groupList from './components/group/groupList.vue'
 import sidebar from './components/sidebar.vue'
 import paymentrow from './components/payments/paymentRow.vue'
 import createpayment from './components/payments/createPayment.vue'
 import login from './components/auth/login.vue'
 import signUp from './components/auth/signUp.vue'
 import uheader from './components/header.vue'
+import user from './components/user/user.vue'
 
 Vue.component('sidebar', sidebar);
 Vue.component('uheader', uheader);
@@ -39,10 +41,12 @@ Vue.component('mainwrapper', mainwrapper);
 Vue.component('isBusy', isBusy);
 Vue.component('groups', groups);
 Vue.component('grouprow', groupRow);
+Vue.component('grouplist', groupList);
 Vue.component('creategroup', createGroup);
 Vue.component('group', group);
 Vue.component('paymentrow',paymentrow);
 Vue.component('createpayment',createpayment);
+Vue.component('user',user);
 
 Vue.filter('moment', require('./filters/moment'));
 
@@ -69,6 +73,11 @@ const router = new VueRouter({
             path: '/groups',    
             meta: { auth: true  },      
             component: groups
+        },{   
+            name: 'user',
+            path: '/user',    
+            meta: { auth: true  },      
+            component: user
         },{   
             name: 'creategroup',
             path: '/creategroup',   

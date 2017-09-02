@@ -16,7 +16,7 @@
                 <div class="item-heading">Created</div>
                 <div class="no-overflow"> {{group.createDateTime | moment('L')}} </div>
             </div>
-            <div class="item-col fixed item-col-actions-dropdown">
+            <div class="item-col fixed item-col-actions-dropdown" v-if="editable">
                 <div class="item-actions-dropdown"> 
                     <!-- <a class="item-actions-toggle-btn"> -->
                         <span class="active">
@@ -30,7 +30,7 @@
 </template>
 <script>
     export default {
-        props: ['group']  ,
+        props: ['group','editable'],
         computed:{
             authorName: function(){
                 if (this.group.authorUser){
@@ -39,6 +39,9 @@
                     return '';
                 } 
             }
+        },
+        created:function(){
+            this.editable;
         }      
     }
 </script>
