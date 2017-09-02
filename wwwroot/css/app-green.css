@@ -1219,7 +1219,10 @@ label,
     .item-list {
       font-size: 1.05rem; } }
   .item-list.striped > li {
-    border-bottom: 1px solid #e9edf0; }
+    border-bottom: 1px solid #e9edf0; 
+    cursor: pointer;}
+  .item-list.striped > li.item-active {
+      border-left: 4px solid #85CE36; }
   .item-list.striped > li:nth-child(2n + 1) {
     background-color: #fcfcfd; }
     @media (max-width: 767px) {

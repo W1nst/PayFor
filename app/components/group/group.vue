@@ -13,7 +13,7 @@
                                 <h3 class="title">Payments</h3> <router-link :to="{ name: 'addpayment'}" class="btn btn-primary btn-sm rounded">Add new</router-link> 
                             </div>
                         </div>
-                        <transition name="component-fade" mode="out-in">
+                        <transition name="slide-fade" mode="out-in">
                             <router-view :key="$route.fullPath"></router-view>
                         </transition>
                         <ul class="item-list striped">
@@ -186,15 +186,29 @@
                     });
             },
             deletePayment:function(index){
-                if (!confirm('Are you sure you want to delete "'+ this.group.payments[index].note+'" thing from the database?')) return;
                 var vm = this;
-                vm.errorMessage = "";
-                vm.$http.post(vm.$apiHelper.deletePaymentUrl(vm.group.payments[index].id))
-                .then(function(response){
-                    vm.group.payments.splice(index, 1);
-                }).catch(function(error){
-                    vm.errorMessage = "Something went wrong: "+ error.response.data.message;
-                });       
+                vm.$swal({
+                        title: "Are you sure?",
+                        text: "You will not be able to recover this payment: " + vm.group.payments[index].note + "!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Yes, delete it!",
+                        closeOnConfirm: false,
+                        showLoaderOnConfirm: true,
+                    },
+                    function(){
+                        vm.errorMessage = "";
+                        vm.$http.post(vm.$apiHelper.deletePaymentUrl(vm.group.payments[index].id))
+                        .then(function(response){
+                            vm.group.payments.splice(index, 1);
+                            swal("Deleted!", "Your group has been deleted.", "success");
+                        }).catch(function(error){
+                            console.log(error.response.data.message);
+                            vm.errorMessage =  error.response.data.message;
+                            swal("Error", vm.errorMessage, "error");
+                        }); 
+                });
             },
         },
         created:function(){
@@ -206,11 +220,16 @@
     }
 </script>
 <style>
-.component-fade-enter-active, .component-fade-leave-active {
-  transition: opacity .3s ease;
+
+.slide-fade-leave-active, .slide-fade-enter-active {
+    transition: 0.3s ease;
 }
-.component-fade-enter, .component-fade-leave-to
-/* .component-fade-leave-active до версии 2.1.8 */ {
-  opacity: 0;
+.slide-fade-enter, .slide-fade-leave-to{
+    max-height: 0px;
+    overflow: hidden;
+}
+.slide-fade-enter-to, .slide-fade-leave{
+    max-height: 1500px;
+    overflow: hidden;
 }
 </style>

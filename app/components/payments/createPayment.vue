@@ -92,7 +92,7 @@ export default {
                 vm.buttontest = 'Add';
                 vm.title = 'Add payment';
                 vm.payment.date = this.$moment().format('L')
-            }
+            };
         },
         getPayment: function(){
             var vm = this;

@@ -40,8 +40,8 @@ namespace PayFor.Controllers
             if (!ModelState.IsValid || model == null) 
                 return BadRequest(new ErrorResponseViewModel {Message = ModelState.ErrorsToString()});
             
-            var token = await CreateToken(model.Email,model.Password);
-            if (token != null) return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token)});
+            var tokenResponse = await CreateTokenResponse(model.Email,model.Password);
+            if (tokenResponse != null) return Ok(tokenResponse);
             
             return BadRequest(new ErrorResponseViewModel {Message="Incorrect email/password!"});
         }
@@ -64,13 +64,13 @@ namespace PayFor.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             
             if (result.Succeeded){
-                var token = await CreateToken(model.Email,model.Password);
-                if (token != null) return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token)});
+                var tokenResponse = await CreateTokenResponse(model.Email,model.Password);
+                if (tokenResponse != null) return Ok(tokenResponse);
             }
             return BadRequest(new ErrorResponseViewModel {Message="Something went wrong!"});
         }
 
-        private async Task<JwtSecurityToken> CreateToken(string email, string password){
+        private async Task<TokenResponseViewModel> CreateTokenResponse(string email, string password){
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null) return null;
 
@@ -80,12 +80,17 @@ namespace PayFor.Controllers
             var claims = await GetValidClaims(user);
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(_config["Tokens:Issuer"],
+                        _config["Tokens:Issuer"],
+                        claims,
+                        expires: DateTime.Now.AddDays(30),
+                        signingCredentials: creds);
 
-            return new JwtSecurityToken(_config["Tokens:Issuer"],
-                _config["Tokens:Issuer"],
-                claims,
-                expires: DateTime.Now.AddDays(30),
-                signingCredentials: creds);
+            return new TokenResponseViewModel{
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            };
         }
 
         private async Task<List<Claim>> GetValidClaims(User user)

@@ -20,8 +20,6 @@
                             <input type="password" class="form-control underlined" v-model="loginModel.password" v-validate="'required'" name="Password" id="pPassword" placeholder="Your password" aria-required="true"> </div>
                             <span class="text-danger" v-if="errors.has('Password')">{{ errors.first('Password') }}</span>
                         <div class="form-group"> <label for="remember">
-                            <input class="checkbox" id="remember" type="checkbox"> 
-                            <span>Remember me</span>
                             </label> <a href="reset.html" class="forgot-btn pull-right">Forgot password?</a> 
                         </div>
                         <div class="form-group"> 

@@ -7,6 +7,7 @@ import moment from 'moment'
 import config from './config'
 import apiHelper from './helpers/apihelper'
 import authPlugin from './components/auth/AuthPlugin'
+import swal from 'sweetalert'
 
 window.moment = moment;
 
@@ -17,6 +18,7 @@ Vue.prototype.$http = axios
 Vue.prototype.$moment = moment
 Vue.prototype.$appConfig = config
 Vue.prototype.$apiHelper = apiHelper
+Vue.prototype.$swal = swal
 
 import isBusy from './components/shared/isBusy.vue'
 import mainwrapper from './components/mainwrapper.vue'
@@ -88,7 +90,6 @@ const router = new VueRouter({
                     props: true,
                     component: createpayment
                 }
-
             ]
         }
     ]

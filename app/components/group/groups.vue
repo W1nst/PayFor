@@ -83,16 +83,31 @@
         },
         methods: {
             deleteGroup:function(index){
-                if (!confirm('Are you sure you want to delete "'+ this.groups[index].name+'" thing from the database?')) return;
+                //if (!confirm('Are you sure you want to delete "'+ this.groups[index].name+'" thing from the database?')) return;
                 var vm = this;
-                vm.errorMessage = "";
-                vm.$http.post(vm.$apiHelper.deleteGroupUrl(vm.groups[index].id))
-                .then(function(response){
-                    vm.groups.splice(index, 1);
-                }).catch(function(error){
-                    console.log(error.response.data.message);
-                    vm.errorMessage = "Something went wrong: "+ error.response.data.message;
-                });       
+                vm.$swal({
+                        title: "Are you sure?",
+                        text: "You will not be able to recover this group: " + vm.groups[index].name + "!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Yes, delete it!",
+                        closeOnConfirm: false,
+                        showLoaderOnConfirm: true,
+                    },
+                    function(){
+                        vm.errorMessage = "";
+                        vm.$http.post(vm.$apiHelper.deleteGroupUrl(vm.groups[index].id))
+                        .then(function(response){
+                            vm.groups.splice(index, 1);
+                            swal("Deleted!", "Your group has been deleted.", "success");
+                        }).catch(function(error){
+                            console.log(error.response.data.message);
+                            vm.errorMessage =  error.response.data.message;
+                            swal("Error", vm.errorMessage, "error");
+                        }); 
+                });
+                      
             },
             fetchGroups: function(){
                 var vm = this;

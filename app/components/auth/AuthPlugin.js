@@ -4,7 +4,9 @@ export default {
         data: function() {
           return {
             token: undefined,
-            isAuthenticated: false
+            isAuthenticated: false,
+            firstName: undefined,
+            lastName: undefined
           }
         },
         created: function() {
@@ -48,6 +50,8 @@ export default {
             },
             storeAuthData(data){
                 sessionStorage.setItem('token', data.token);
+                sessionStorage.setItem('firstName', data.firstName);
+                sessionStorage.setItem('lastName', data.lastName);
             },
             setAuth(){
                 var vm = this;
@@ -55,6 +59,8 @@ export default {
                 if(token) {
                     vm.isAuthenticated = true;        
                     vm.token = token;
+                    vm.firstName = sessionStorage.getItem('firstName');
+                    vm.lastName = sessionStorage.getItem('lastName');
                     vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + token;
                 }
                 else {
@@ -64,8 +70,12 @@ export default {
             logout() {
                 var vm = this;
                 sessionStorage.removeItem('token');
+                sessionStorage.removeItem('firstName');
+                sessionStorage.removeItem('lastName');
                 vm.isAuthenticated = false;        
                 vm.token = undefined;
+                vm.firstName = undefined;
+                vm.lastName = undefined;
                 vm.$http.defaults.headers.common['Authorization'] = undefined;
                 options.router.push({ name: 'login'});
             }

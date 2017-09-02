@@ -1,11 +1,10 @@
 <template>
-    <li>
+    <!-- <li> -->
+        <router-link :to="{ name: 'editpayment', params: { paymentId: payment.id }}" tag="li" active-class="item-active" >
         <div class="item-row">
             <div class="item-col item-col-title no-overflow">
                 <div>
-                    <router-link :to="{ name: 'editpayment', params: { paymentId: payment.id }}">
-                        <h4 class="item-title no-wrap"> {{payment.note}}</h4>
-                    </router-link>
+                    <h4 class="item-title no-wrap"> {{payment.note}}</h4>
                 </div>
             </div>
             <div class="item-col item-col-sales">
@@ -28,15 +27,16 @@
             </div>
             <div class="item-col fixed item-col-actions-dropdown">
                 <div class="item-actions-dropdown"> 
-                    <a class="item-actions-toggle-btn">
-                        <span class="inactive">
+                    <!-- <a class="item-actions-toggle-btn"> -->
+                        <span class="active">
                             <i class="fa fa-trash-o" v-on:click.stop="$emit('remove')"></i>
                         </span>
-                    </a>
+                    <!-- </a> -->
                 </div>
             </div>
         </div>
-    </li>
+        </router-link>
+    <!-- </li> -->
 </template>
 <script>
     export default {
